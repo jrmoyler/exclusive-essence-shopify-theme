@@ -1,15 +1,59 @@
-<section class="container">
-  <h1>Cart</h1>
-  {% if cart.item_count == 0 %}
-    <p>Your cart is empty.</p>
-  {% else %}
-    {% for item in cart.items %}
-      <p>{{ item.product.title }} × {{ item.quantity }} — {{ item.final_line_price | money }}</p>
-    {% endfor %}
-    <p>Subtotal {{ cart.total_price | money }}</p>
-    <a href="/checkout">Checkout</a>
-  {% endif %}
+<section class="ee-shopify-main">
+  <div class="container">
+    <nav class="ee-breadcrumb" aria-label="Breadcrumb">
+      <a href="{{ routes.root_url }}">Home</a>
+      <span>/</span>
+      <span>Cart</span>
+    </nav>
+    <h1>Your Cart</h1>
+    {% if cart.item_count == 0 %}
+      <div class="ee-empty">
+        <h2>Your cart is empty.</h2>
+        <p>Start with the catalog — human hair, hair care, color and everyday essentials.</p>
+        <a class="btn btn-primary" href="{{ routes.all_products_collection_url }}">Start Shopping</a>
+      </div>
+    {% else %}
+      <form action="{{ routes.cart_url }}" method="post" class="ee-cart-form">
+        <table class="cart-table">
+          <thead>
+            <tr><th>Product</th><th>Qty</th><th>Total</th></tr>
+          </thead>
+          <tbody>
+            {% for item in cart.items %}
+              <tr>
+                <td>
+                  <div class="ee-cart-item">
+                    {% if item.image %}
+                      {% render 'hi-res-image', image: item.image, alt: item.title, sizes: '84px', class: 'ee-cart-thumb' %}
+                    {% endif %}
+                    <div>
+                      <strong><a href="{{ item.url }}">{{ item.product.title }}</a></strong><br>
+                      <small>{{ item.variant.title }}</small><br>
+                      <a class="remove" href="{{ item.url_to_remove }}">Remove</a>
+                    </div>
+                  </div>
+                </td>
+                <td>
+                  <input type="number" name="updates[]" value="{{ item.quantity }}" min="0" aria-label="Quantity for {{ item.title | escape }}">
+                </td>
+                <td><b>{{ item.final_line_price | money }}</b></td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+        <div class="cart-summary">
+          <div class="total-row"><span>Subtotal</span><span>{{ cart.total_price | money }}</span></div>
+          <p class="ee-lede">Taxes and shipping calculated at checkout. Columbus pickup is available.</p>
+          <button class="btn btn-secondary" type="submit" name="update">Update cart</button>
+          <button class="btn btn-primary" type="submit" name="checkout">Checkout Securely</button>
+        </div>
+      </form>
+    {% endif %}
+  </div>
 </section>
 {% schema %}
-{"name":"Cart","settings":[]}
+{
+  "name": "Cart",
+  "settings": []
+}
 {% endschema %}

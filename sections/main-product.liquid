@@ -1,12 +1,223 @@
-<section class="container">
-  <h1>{{ product.title }}</h1>
-  <p>{{ product.price | money }}</p>
-  {% form 'product', product %}
-    <input type="hidden" name="id" value="{{ product.selected_or_first_available_variant.id }}">
-    <button type="submit">Add to cart</button>
-  {% endform %}
-  <div>{{ product.description }}</div>
+{% assign current_variant = product.selected_or_first_available_variant %}
+{% assign featured = product.selected_or_first_available_variant.featured_image | default: product.featured_image %}
+<section class="ee-shopify-main ee-product-page" data-product-section data-product-id="{{ product.id }}">
+  <div class="container">
+    <nav class="ee-breadcrumb" aria-label="Breadcrumb">
+      <a href="{{ routes.root_url }}">Home</a>
+      <span aria-hidden="true">/</span>
+      <a href="{{ routes.all_products_collection_url }}">Catalog</a>
+      {% if collection %}
+        <span aria-hidden="true">/</span>
+        <a href="{{ collection.url }}">{{ collection.title }}</a>
+      {% elsif product.type != blank %}
+        <span aria-hidden="true">/</span>
+        <a href="{{ routes.all_products_collection_url }}">{{ product.type }}</a>
+      {% endif %}
+      <span aria-hidden="true">/</span>
+      <span aria-current="page">{{ product.title }}</span>
+    </nav>
+
+    <div class="ee-product-grid">
+      <div class="ee-product-media-col">
+        <button class="ee-product-media" type="button" id="eeMainMedia" aria-label="View larger image of {{ product.title | escape }}">
+          {% if featured %}
+            {% render 'hi-res-image', image: featured, alt: product.title, sizes: '(min-width: 900px) 48vw, 100vw', loading: 'eager', fetchpriority: 'high', class: 'ee-main-photo' %}
+          {% else %}
+            <img src="{{ 'e76907a047b4.webp' | asset_url }}" alt="{{ product.title | escape }}" class="ee-main-photo" width="1600" height="1600">
+          {% endif %}
+        </button>
+        {% if product.images.size > 1 %}
+          <div class="ee-thumbs" role="list">
+            {% for image in product.images %}
+              <button type="button" class="ee-thumb{% if image == featured %} is-active{% endif %}" data-full="{{ image | image_url: width: 2000 }}" data-srcset="{{ image | image_url: width: 800 }} 800w, {{ image | image_url: width: 1200 }} 1200w, {{ image | image_url: width: 2000 }} 2000w" aria-label="Show image {{ forloop.index }}">
+                <img src="{{ image | image_url: width: 240 }}" srcset="{{ image | image_url: width: 160 }} 160w, {{ image | image_url: width: 320 }} 320w" alt="{{ image.alt | default: product.title | escape }}" width="120" height="120" loading="lazy">
+              </button>
+            {% endfor %}
+          </div>
+        {% endif %}
+      </div>
+
+      <div class="ee-product-copy">
+        {% if product.vendor != blank %}
+          <div class="product-brand">{{ product.vendor }}{% if product.type != blank %} · {{ product.type }}{% endif %}</div>
+        {% endif %}
+        <h1>{{ product.title }}</h1>
+        <div class="ee-price" id="eePrice">
+          {{ current_variant.price | money }}
+          {% if current_variant.compare_at_price > current_variant.price %}
+            <span class="ee-compare">{{ current_variant.compare_at_price | money }}</span>
+          {% endif %}
+        </div>
+        <p class="ee-pickup">In stock for pickup at 2100 Cleveland Ave, Columbus · Mon–Sat 10 AM–10 PM · Sun 12–6 PM</p>
+
+        {% form 'product', product, class: 'ee-form', id: 'eeProductForm', data-product-form: '' %}
+          {% unless product.has_only_default_variant %}
+            {% for option in product.options_with_values %}
+              <div class="ee-variant">
+                <fieldset>
+                  <legend>{{ option.name }}</legend>
+                  <div class="ee-swatches">
+                    {% for value in option.values %}
+                      <label class="ee-swatch">
+                        <input type="radio" name="options[{{ option.name }}]" value="{{ value | escape }}" {% if option.selected_value == value %}checked{% endif %}>
+                        <span>{{ value }}</span>
+                      </label>
+                    {% endfor %}
+                  </div>
+                </fieldset>
+              </div>
+            {% endfor %}
+          {% endunless %}
+          <script type="application/json" id="eeVariantJson">
+            {{ product.variants | json }}
+          </script>
+          <input type="hidden" name="id" id="eeVariantId" value="{{ current_variant.id }}">
+          <div class="ee-qty">
+            <label for="Quantity-{{ section.id }}">Qty</label>
+            <div class="ee-qty-stepper">
+              <button type="button" data-qty-delta="-1" aria-label="Decrease quantity">−</button>
+              <input id="Quantity-{{ section.id }}" type="number" name="quantity" value="1" min="1" inputmode="numeric">
+              <button type="button" data-qty-delta="1" aria-label="Increase quantity">+</button>
+            </div>
+          </div>
+          <button class="btn btn-primary" type="submit" name="add" id="eeAddBtn" {% unless current_variant.available %}disabled{% endunless %}>
+            {% if current_variant.available %}Add to Cart{% else %}Sold Out{% endif %}
+          </button>
+          <a class="btn btn-secondary" href="{{ routes.all_products_collection_url }}">Keep shopping</a>
+        {% endform %}
+
+        {% if product.description != blank %}
+          <details class="ee-accordion" open>
+            <summary>Details</summary>
+            <div class="product-description">{{ product.description }}</div>
+          </details>
+        {% endif %}
+        <details class="ee-accordion">
+          <summary>Pickup & shipping</summary>
+          <p>Local pickup at the Columbus flagship, 2100 Cleveland Ave. Nationwide shipping at checkout. Layaway is available in-store and from the cart drawer.</p>
+        </details>
+      </div>
+    </div>
+
+    <div class="ee-related">
+      <div class="section-title"><div><h2>You may also like</h2><p>More from the Exclusive Essence catalog.</p></div><a class="text-link" href="{{ routes.all_products_collection_url }}">Shop all products →</a></div>
+      <div class="product-shelf">
+        {% assign shown = 0 %}
+        {% if recommendations.performed and recommendations.products_count > 0 %}
+          {% for rec in recommendations.products limit: 8 %}
+            {% unless rec.id == product.id %}
+              {% render 'product-card', product: rec %}
+              {% assign shown = shown | plus: 1 %}
+            {% endunless %}
+          {% endfor %}
+        {% endif %}
+        {% if shown < 4 %}
+          {% for rec in collections.all.products limit: 12 %}
+            {% if shown >= 8 %}{% break %}{% endif %}
+            {% unless rec.id == product.id %}
+              {% render 'product-card', product: rec %}
+              {% assign shown = shown | plus: 1 %}
+            {% endunless %}
+          {% endfor %}
+        {% endif %}
+      </div>
+    </div>
+  </div>
 </section>
+
+<dialog class="ee-lightbox" id="eeLightbox" aria-label="Product image">
+  <button type="button" class="icon-btn modal-close" data-close-lightbox aria-label="Close">×</button>
+  <img id="eeLightboxImg" alt="{{ product.title | escape }}">
+</dialog>
+
+<script>
+(function(){
+  const thumbs = document.querySelectorAll('.ee-thumb');
+  const main = document.querySelector('.ee-main-photo');
+  const lightbox = document.getElementById('eeLightbox');
+  const lightImg = document.getElementById('eeLightboxImg');
+  thumbs.forEach(function(btn){
+    btn.addEventListener('click', function(){
+      thumbs.forEach(function(b){ b.classList.remove('is-active'); });
+      btn.classList.add('is-active');
+      if(main){
+        main.src = btn.dataset.full;
+        if(btn.dataset.srcset) main.srcset = btn.dataset.srcset;
+      }
+    });
+  });
+  document.getElementById('eeMainMedia')?.addEventListener('click', function(){
+    if(!main || !lightbox) return;
+    lightImg.src = main.currentSrc || main.src;
+    lightbox.showModal();
+  });
+  document.querySelector('[data-close-lightbox]')?.addEventListener('click', function(){ lightbox.close(); });
+  lightbox?.addEventListener('click', function(e){ if(e.target === lightbox) lightbox.close(); });
+
+  const form = document.getElementById('eeProductForm');
+  const variantInput = document.getElementById('eeVariantId');
+  const addBtn = document.getElementById('eeAddBtn');
+  const priceEl = document.getElementById('eePrice');
+  let variants = [];
+  try { variants = JSON.parse(document.getElementById('eeVariantJson').textContent); } catch(e) {}
+  function selectedOptions(){
+    return Array.from(form.querySelectorAll('fieldset')).map(function(fs){
+      const checked = fs.querySelector('input:checked');
+      return checked ? checked.value : '';
+    });
+  }
+  function findVariant(){
+    const opts = selectedOptions();
+    if(!opts.length) return variants[0];
+    return variants.find(function(v){
+      return opts.every(function(o,i){ return v.options[i] === o; });
+    }) || variants[0];
+  }
+  form?.addEventListener('change', function(){
+    const v = findVariant();
+    if(!v) return;
+    variantInput.value = v.id;
+    if(priceEl){
+      const money = (window.EE_MONEY_FORMAT || '${{amount}}').replace('{{amount}}', (v.price/100).toFixed(2));
+      priceEl.childNodes[0].textContent = ' $' + (v.price/100).toFixed(2) + ' ';
+    }
+    if(addBtn){
+      addBtn.disabled = !v.available;
+      addBtn.textContent = v.available ? 'Add to Cart' : 'Sold Out';
+    }
+  });
+  form?.querySelectorAll('[data-qty-delta]').forEach(function(btn){
+    btn.addEventListener('click', function(){
+      const input = form.querySelector('input[name="quantity"]');
+      const next = Math.max(1, Number(input.value || 1) + Number(btn.dataset.qtyDelta));
+      input.value = String(next);
+    });
+  });
+  form?.addEventListener('submit', function(e){
+    if(!window.fetch) return;
+    e.preventDefault();
+    const data = new FormData(form);
+    fetch((window.EE_ROUTES && EE_ROUTES.cartAdd) || '/cart/add.js', {
+      method: 'POST',
+      body: data,
+      headers: { 'X-Requested-With': 'XMLHttpRequest' }
+    }).then(function(r){
+      if(r.ok){
+        window.location.href = (window.EE_ROUTES && EE_ROUTES.cart) || '/cart';
+      } else {
+        form.submit();
+      }
+    }).catch(function(){ form.submit(); });
+  });
+})();
+</script>
+
 {% schema %}
-{"name":"Product","settings":[]}
+{
+  "name": "Product",
+  "settings": [
+    {"type":"checkbox","id":"show_vendor","label":"Show vendor","default":true},
+    {"type":"checkbox","id":"show_pickup","label":"Show Columbus pickup note","default":true}
+  ]
+}
 {% endschema %}

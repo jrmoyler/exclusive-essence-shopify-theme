@@ -1,9 +1,25 @@
 {% layout none %}
 <!doctype html>
-<html>
-<head>{{ content_for_header }}</head>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Gift card – {{ shop.name }}</title>
+  {{ 'ee.css' | asset_url | stylesheet_tag }}
+  {{ content_for_header }}
+</head>
 <body>
-  <h1>Gift card</h1>
-  <p>{{ gift_card.code | format_code }} — {{ gift_card.balance | money }}</p>
+  <main class="ee-shopify-main">
+    <div class="container" style="max-width:560px;text-align:center">
+      <img src="{{ 'b277e37070df.png' | asset_url }}" alt="{{ shop.name }}" style="height:72px;margin:0 auto 24px">
+      <h1>Gift card</h1>
+      <p class="ee-lede">{{ gift_card.balance | money }} remaining{% if gift_card.enabled == false %} · disabled{% endif %}</p>
+      <p style="font-size:1.6rem;font-weight:800;letter-spacing:.12em">{{ gift_card.code | format_code }}</p>
+      {% if gift_card.pass_url %}
+        <p><a class="btn btn-primary" href="{{ gift_card.pass_url }}">Add to Apple Wallet</a></p>
+      {% endif %}
+      <p><a href="{{ shop.url }}">Shop {{ shop.name }}</a></p>
+    </div>
+  </main>
 </body>
 </html>

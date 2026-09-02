@@ -1,0 +1,40 @@
+{%- comment -%}
+  High-resolution responsive image, up to 2000px.
+  Accepts: image, url, alt, class, sizes, loading, fetchpriority, widths, fallback
+{%- endcomment -%}
+{%- liquid
+  assign ee_alt = alt | default: image.alt | default: ''
+  assign ee_sizes = sizes | default: '(min-width: 1200px) 25vw, (min-width: 750px) 33vw, 50vw'
+  assign ee_loading = loading | default: 'lazy'
+  assign ee_class = class | default: ''
+  if image
+    assign ee_src = image | image_url: width: 1200
+  elsif url != blank
+    assign ee_src = url
+  else
+    assign ee_src = fallback
+  endif
+-%}
+{%- if image -%}
+  <img
+    class="{{ ee_class }}"
+    src="{{ image | image_url: width: 1200 }}"
+    srcset="{{ image | image_url: width: 400 }} 400w, {{ image | image_url: width: 800 }} 800w, {{ image | image_url: width: 1200 }} 1200w, {{ image | image_url: width: 1600 }} 1600w, {{ image | image_url: width: 2000 }} 2000w"
+    sizes="{{ ee_sizes }}"
+    alt="{{ ee_alt | escape }}"
+    width="{{ image.width | default: 1200 }}"
+    height="{{ image.height | default: 1200 }}"
+    loading="{{ ee_loading }}"
+    decoding="async"
+    {% if fetchpriority != blank %}fetchpriority="{{ fetchpriority }}"{% endif %}
+  >
+{%- elsif ee_src != blank -%}
+  <img
+    class="{{ ee_class }}"
+    src="{{ ee_src }}"
+    alt="{{ ee_alt | escape }}"
+    loading="{{ ee_loading }}"
+    decoding="async"
+    {% if fetchpriority != blank %}fetchpriority="{{ fetchpriority }}"{% endif %}
+  >
+{%- endif -%}

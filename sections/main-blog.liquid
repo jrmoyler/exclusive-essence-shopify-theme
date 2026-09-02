@@ -1,0 +1,30 @@
+<section class="ee-shopify-main">
+  <div class="container">
+    <h1>{{ blog.title }}</h1>
+    <div class="product-shelf" style="grid-template-columns:repeat(auto-fill,minmax(260px,1fr));display:grid;gap:22px">
+      {% paginate blog.articles by 12 %}
+        {% for article in blog.articles %}
+          <article class="product-card">
+            <a class="product-media" href="{{ article.url }}">
+              {% if article.image %}
+                <img src="{{ article.image | image_url: width: 800 }}" alt="{{ article.title | escape }}">
+              {% endif %}
+            </a>
+            <div class="product-body">
+              <div class="product-brand">{{ article.published_at | date: '%B %d, %Y' }}</div>
+              <div class="product-title"><a href="{{ article.url }}">{{ article.title }}</a></div>
+              <p>{{ article.excerpt_or_content | strip_html | truncate: 140 }}</p>
+            </div>
+          </article>
+        {% endfor %}
+        <div class="pagination">{{ paginate | default_pagination }}</div>
+      {% endpaginate %}
+    </div>
+  </div>
+</section>
+{% schema %}
+{
+  "name": "Blog",
+  "settings": []
+}
+{% endschema %}

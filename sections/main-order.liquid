@@ -1,0 +1,26 @@
+<section class="ee-shopify-main customer">
+  <div class="container">
+    <nav class="ee-breadcrumb"><a href="{{ routes.account_url }}">Account</a><span>/</span><span>{{ order.name }}</span></nav>
+    <h1>Order {{ order.name }}</h1>
+    <p class="ee-lede">Placed {{ order.created_at | date: '%B %d, %Y' }} · {{ order.financial_status_label }}</p>
+    <table class="cart-table">
+      <thead><tr><th>Product</th><th>Qty</th><th>Total</th></tr></thead>
+      <tbody>
+        {% for line_item in order.line_items %}
+          <tr>
+            <td>{{ line_item.title }}</td>
+            <td>{{ line_item.quantity }}</td>
+            <td>{{ line_item.final_line_price | money }}</td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+    <div class="cart-summary">
+      <div class="total-row"><span>Subtotal</span><span>{{ order.line_items_subtotal_price | money }}</span></div>
+      <div class="total-row"><span>Total</span><span>{{ order.total_price | money }}</span></div>
+    </div>
+  </div>
+</section>
+{% schema %}
+{ "name": "Order", "settings": [] }
+{% endschema %}

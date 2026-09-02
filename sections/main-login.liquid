@@ -1,0 +1,32 @@
+<section class="ee-shopify-main customer">
+  <div class="container">
+    <h1>Account</h1>
+    <div class="ee-product-grid">
+      <div>
+        <h2 style="font-family:Georgia,serif">Sign in</h2>
+        {% form 'customer_login' %}
+          {{ form.errors | default_errors }}
+          <label class="sr-only" for="CustomerEmail">Email</label>
+          <input type="email" name="customer[email]" id="CustomerEmail" placeholder="Email address" required autocomplete="email">
+          <label class="sr-only" for="CustomerPassword">Password</label>
+          <input type="password" name="customer[password]" id="CustomerPassword" placeholder="Password" required autocomplete="current-password">
+          <button class="btn btn-primary" type="submit">Sign in</button>
+          <a href="#recover">Forgot password?</a>
+        {% form 'recover_customer_password', id: 'recover' %}
+          <p>Enter your email to receive a reset link.</p>
+          <input type="email" name="email" placeholder="Email address" required>
+          <button class="btn btn-secondary" type="submit">Send reset link</button>
+        {% endform %}
+        {% endform %}
+      </div>
+      <div>
+        <h2 style="font-family:Georgia,serif">Create account</h2>
+        <p class="ee-lede">Save your wishlist, track orders and check out faster.</p>
+        <a class="btn btn-secondary" href="{{ routes.account_register_url }}">Create an account</a>
+      </div>
+    </div>
+  </div>
+</section>
+{% schema %}
+{ "name": "Login", "settings": [] }
+{% endschema %}

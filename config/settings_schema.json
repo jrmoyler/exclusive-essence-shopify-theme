@@ -2,9 +2,83 @@
   {
     "name": "theme_info",
     "theme_name": "Exclusive Essence",
-    "theme_version": "1.0.0",
-    "theme_author": "Exclusive Essence",
+    "theme_version": "2.0.0",
+    "theme_author": "Exclusive Essence Hair & Beauty Emporium",
     "theme_documentation_url": "https://exclusiveessence.store",
     "theme_support_url": "https://exclusiveessence.store"
+  },
+  {
+    "name": "Colors",
+    "settings": [
+      {
+        "type": "header",
+        "content": "Matches the original Exclusive Essence storefront"
+      },
+      {
+        "type": "color",
+        "id": "color_porcelain",
+        "label": "Background",
+        "default": "#fffefd"
+      },
+      {
+        "type": "color",
+        "id": "color_pearl",
+        "label": "Pearl",
+        "default": "#f8f7f3"
+      },
+      {
+        "type": "color",
+        "id": "color_ivory",
+        "label": "Ivory",
+        "default": "#f3ede2"
+      },
+      {
+        "type": "color",
+        "id": "color_gold",
+        "label": "Gold",
+        "default": "#c79b3b"
+      },
+      {
+        "type": "color",
+        "id": "color_gold_2",
+        "label": "Gold highlight",
+        "default": "#e4c778"
+      },
+      {
+        "type": "color",
+        "id": "color_antique",
+        "label": "Antique gold",
+        "default": "#8f6928"
+      },
+      {
+        "type": "color",
+        "id": "color_ink",
+        "label": "Ink",
+        "default": "#171714"
+      }
+    ]
+  },
+  {
+    "name": "Store",
+    "settings": [
+      {
+        "type": "text",
+        "id": "instagram",
+        "label": "Instagram handle",
+        "default": "shopexclusiveessence"
+      },
+      {
+        "type": "text",
+        "id": "address",
+        "label": "Flagship address",
+        "default": "2100 Cleveland Ave, Columbus, OH 43211"
+      },
+      {
+        "type": "textarea",
+        "id": "hours",
+        "label": "Hours",
+        "default": "Monday\u2013Saturday: 10 AM\u201310 PM\nSunday: 12 PM\u20136 PM"
+      }
+    ]
   }
 ]

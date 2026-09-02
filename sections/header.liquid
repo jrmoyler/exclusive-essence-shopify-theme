@@ -1,14 +1,128 @@
-<div class="utility"><div class="container"><span class="essence-way">The Essence Way!</span></div></div>
-<header class="site-header">
+<div class="utility">
+  <div class="container">
+    <div class="utility-center"><span class="ew-star">✦</span><span class="essence-way">The Essence Way!</span><span class="ew-star">✦</span></div>
+  </div>
+</div>
+<header class="site-header" id="siteHeader">
   <div class="container header-main">
-    <a href="{{ routes.root_url }}">{{ shop.name }}</a>
-    <form action="{{ routes.search_url }}" method="get" class="search-shell">
-      <input type="search" name="q" value="{{ search.terms | escape }}" placeholder="Search products...">
-      <button type="submit">Search</button>
+    <a href="{{ routes.root_url }}" aria-label="Exclusive Essence home"><img class="brand-logo" src="{{ 'b277e37070df.png' | asset_url }}" data-asset="logo" alt="Exclusive Essence Hair & Beauty Emporium"></a>
+    <form class="search-shell" id="desktopSearchForm" action="{{ routes.search_url }}" method="get" role="search">
+      <select name="department" aria-label="Search category">
+        <option value="">All departments</option>
+        <option value="Human Hair">Human Hair</option>
+        <option value="Hair Care">Hair Care</option>
+        <option value="Hair Color">Hair Color</option>
+        <option value="Essentials">Essentials</option>
+      </select>
+      <input id="desktopSearchInput" type="search" name="q" value="{{ search.terms | escape }}" placeholder="Search products, brands and categories..." autocomplete="off">
+      <input type="hidden" name="type" value="product">
+      <button type="submit" aria-label="Search"><svg class="icon"><circle cx="11" cy="11" r="7"></circle><path d="m20 20-3.5-3.5"></path></svg></button>
     </form>
-    <a href="{{ routes.cart_url }}">Cart {{ cart.item_count }}</a>
+
+    <div class="header-actions">
+      <a class="action-label" href="#stores" data-open-stores><svg class="icon"><path d="M20 10c0 5-8 11-8 11S4 15 4 10a8 8 0 1 1 16 0Z"></path><circle cx="12" cy="10" r="2.5"></circle></svg><span>Store</span></a>
+      <a class="action-label" href="{{ routes.account_url }}" id="accountBtn"><svg class="icon"><circle cx="12" cy="7" r="4"></circle><path d="M4 21a8 8 0 0 1 16 0"></path></svg><span>Account</span></a>
+      <button class="action-label" id="wishlistBtn" type="button"><svg class="icon"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.6l-1-1a5.5 5.5 0 0 0-7.8 7.8l1 1L12 21l7.8-7.6 1-1a5.5 5.5 0 0 0 0-7.8Z"></path></svg><span>Wishlist</span></button>
+      <a class="action-label icon-btn" id="cartBtn" href="{{ routes.cart_url }}" aria-label="Open cart"><svg class="icon"><path d="M3 3h2l2.4 11.2a2 2 0 0 0 2 1.6h7.8a2 2 0 0 0 2-1.6L21 7H6"></path><circle cx="10" cy="20" r="1"></circle><circle cx="18" cy="20" r="1"></circle></svg><span>Cart</span><b class="count" id="cartCount">{{ cart.item_count }}</b></a>
+
+    </div>
+  </div>
+  <div class="container mobile-row">
+    <button class="icon-btn" id="menuBtn" aria-label="Open menu"><svg class="icon"><path d="M4 6h16M4 12h16M4 18h16"></path></svg></button>
+    <a href="{{ routes.root_url }}"><img class="brand-logo" src="{{ 'b277e37070df.png' | asset_url }}" data-asset="logo" alt="Exclusive Essence"></a>
+    <div class="mobile-actions"><button class="icon-btn" id="mobileSearchBtn" aria-label="Focus search"><svg class="icon"><circle cx="11" cy="11" r="7"></circle><path d="m20 20-3.5-3.5"></path></svg></button><button class="icon-btn" id="mobileCartBtn" aria-label="Open cart"><svg class="icon"><path d="M3 3h2l2.4 11.2a2 2 0 0 0 2 1.6h7.8a2 2 0 0 0 2-1.6L21 7H6"></path><circle cx="10" cy="20" r="1"></circle><circle cx="18" cy="20" r="1"></circle></svg><b class="count" id="mobileCartCount">{{ cart.item_count }}</b></button></div>
+  </div>
+  <div class="container mobile-search"><form class="search-shell" id="mobileSearchForm" action="{{ routes.search_url }}" method="get" role="search"><input id="mobileSearchInput" type="search" name="q" value="{{ search.terms | escape }}" placeholder="Search products and brands..."><input type="hidden" name="type" value="product"><button type="submit" aria-label="Search"><svg class="icon"><circle cx="11" cy="11" r="7"></circle><path d="m20 20-3.5-3.5"></path></svg></button></form></div>
+
+  <nav class="mobile-department-rail" aria-label="Quick departments">
+    <div class="container">
+      <a href="{{ routes.all_products_collection_url }}" data-mobile-filter="All">New</a>
+      <a href="{% if collections['human-hair'].handle == 'human-hair' %}{{ collections['human-hair'].url }}{% else %}{{ routes.all_products_collection_url }}{% endif %}" data-mobile-filter="Human Hair">Human Hair</a>
+      <a href="{% if collections['hair-care'].handle == 'hair-care' %}{{ collections['hair-care'].url }}{% else %}{{ routes.all_products_collection_url }}{% endif %}" data-mobile-filter="Hair Care">Hair Care</a>
+      <a href="{% if collections['hair-color'].handle == 'hair-color' %}{{ collections['hair-color'].url }}{% else %}{{ routes.all_products_collection_url }}{% endif %}" data-mobile-filter="Hair Color">Hair Color</a>
+      <a href="{% if collections['essentials'].handle == 'essentials' %}{{ collections['essentials'].url }}{% else %}{{ routes.all_products_collection_url }}{% endif %}" data-mobile-filter="Essentials">Essentials</a>
+      <a href="#brands">Brands</a>
+      <a href="#stores" data-open-stores>Stores</a>
+    </div>
+  </nav>
+  <nav class="desktop-nav" aria-label="Primary navigation"><div class="container">
+    <button class="nav-item nav-departments" id="departmentsBtn" type="button" aria-expanded="false" aria-controls="megaMenu"><svg class="icon"><path d="M4 6h16M4 12h16M4 18h16"></path></svg>Shop Departments</button>
+    <a class="nav-item active" href="{{ routes.all_products_collection_url }}" data-nav-filter="All">New Arrivals</a>
+    <a class="nav-item" href="{% if collections['human-hair'].handle == 'human-hair' %}{{ collections['human-hair'].url }}{% else %}{{ routes.all_products_collection_url }}{% endif %}" data-nav-filter="Human Hair">Human Hair</a>
+    <a class="nav-item" href="{% if collections['hair-care'].handle == 'hair-care' %}{{ collections['hair-care'].url }}{% else %}{{ routes.all_products_collection_url }}{% endif %}" data-nav-filter="Hair Care">Hair Care</a>
+    <a class="nav-item" href="{% if collections['hair-color'].handle == 'hair-color' %}{{ collections['hair-color'].url }}{% else %}{{ routes.all_products_collection_url }}{% endif %}" data-nav-filter="Hair Color">Hair Color</a>
+    <a class="nav-item" href="{% if collections['essentials'].handle == 'essentials' %}{{ collections['essentials'].url }}{% else %}{{ routes.all_products_collection_url }}{% endif %}" data-nav-filter="Essentials">Essentials</a>
+    <a class="nav-item" href="#brands">Brands</a>
+    <a class="nav-item" href="#deals">Deals</a>
+    <a class="nav-item" href="#stores" data-open-stores>Our Stores</a>
+  </div></nav>
+
+  <div class="mega-menu" id="megaMenu" aria-hidden="true">
+    <div class="container mega-shell">
+      <aside class="mega-side">
+        <span class="mega-label">Shop Departments</span>
+        <button data-filter-link="All"><strong>New &amp; Trending</strong><small>Recently added store picks</small></button>
+        <button data-filter-link="Human Hair"><strong>Human Hair</strong><small>Weaves, bundles &amp; textures</small></button>
+        <button data-filter-link="Hair Care"><strong>Hair Care</strong><small>Wash day, moisture &amp; styling</small></button>
+        <button data-filter-link="Hair Color"><strong>Hair Color</strong><small>Semi-permanent &amp; temporary color</small></button>
+        <button data-filter-link="Essentials"><strong>Essentials</strong><small>Tools, accessories &amp; beauty basics</small></button>
+      </aside>
+      <div class="mega-columns">
+        <section class="mega-col">
+          <h3>Hair &amp; Extensions</h3>
+          <a href="#catalog" data-filter-link="Human Hair">100% Human Hair</a>
+          <a href="#catalog" data-filter-link="Human Hair">Yaki Weaves</a>
+          <a href="#catalog" data-filter-link="Human Hair">Lengths &amp; Color Options</a>
+          <a href="#catalog" data-brand-link="Outre">Outre Human Hair</a>
+          <a href="#catalog" data-brand-link="SHAKE N GO">Shake-N-Go Milkyway</a>
+        </section>
+        <section class="mega-col">
+          <h3>Hair Care</h3>
+          <a href="#catalog" data-filter-link="Hair Care">Shampoo &amp; Conditioner</a>
+          <a href="#catalog" data-filter-link="Hair Care">Leave-Ins &amp; Detanglers</a>
+          <a href="#catalog" data-filter-link="Hair Care">Curl &amp; Coil Care</a>
+          <a href="#catalog" data-filter-link="Hair Care">Gels &amp; Edge Control</a>
+          <a href="#catalog" data-filter-link="Hair Care">Sprays &amp; Finishing</a>
+        </section>
+        <section class="mega-col">
+          <h3>Hair Color</h3>
+          <a href="#catalog" data-filter-link="Hair Color">Semi-Permanent Color</a>
+          <a href="#catalog" data-filter-link="Hair Color">Temporary Spray Color</a>
+          <a href="#catalog" data-filter-link="Hair Color">Browns &amp; Natural Shades</a>
+          <a href="#catalog" data-filter-link="Hair Color">Bold Fashion Shades</a>
+          <a href="#catalog" data-brand-link="Adore">Adore Color</a>
+        </section>
+        <section class="mega-col mega-brand-list">
+          <h3>Shop Brands</h3>
+          <a href="#catalog" data-brand-link="Aunt Jackie's">Aunt Jackie's</a>
+          <a href="#catalog" data-brand-link="African Pride">African Pride</a>
+          <a href="#catalog" data-brand-link="Got2b">Got2b</a>
+          <a href="#catalog" data-brand-link="VO5">VO5</a>
+          <a href="#catalog" data-brand-link="Outre">Outre</a>
+          <a href="#brands">View Featured Brands</a>
+        </section>
+      </div>
+      <aside class="mega-promo">
+        <div class="mega-promo-copy">
+          <span>Pickup in Columbus</span>
+          <strong>Shop online. Pick up in store.</strong>
+          <p>2100 Cleveland Ave<br>Mon–Sat 10 AM–10 PM<br>Sun 12–6 PM</p>
+          <a href="#visit">Store details →</a>
+        </div>
+        <img id="megaPromoImage" alt="Featured Exclusive Essence product">
+      </aside>
+    </div>
   </div>
 </header>
+
+
 {% schema %}
-{"name":"Header","settings":[]}
+{
+  "name": "Header",
+  "class": "section-header",
+  "settings": [
+    {"type":"image_picker","id":"logo","label":"Logo"},
+    {"type":"range","id":"logo_width","min":80,"max":280,"step":5,"unit":"px","label":"Logo width","default":215}
+  ]
+}
 {% endschema %}

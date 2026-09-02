@@ -1,11 +1,83 @@
-<section class="container">
-  <h1>{{ collection.title }}</h1>
-  <div class="catalog-grid">
-    {% for product in collection.products %}
-      {% render 'product-card', product: product %}
-    {% endfor %}
+{% liquid
+  assign ee_collection = collection
+  assign ee_is_all = false
+  if collection == blank or collection.products_count == 0
+    assign ee_collection = collections.all
+    assign ee_is_all = true
+  endif
+  if collection.handle == 'all' or collection.handle == 'frontpage'
+    assign ee_is_all = true
+  endif
+%}
+<section class="section catalog dedicated-catalog is-open ee-collection-page" id="catalog">
+  <div class="container">
+    <div class="catalog-view-head">
+      <a class="catalog-back" href="{{ routes.root_url }}">← Back to storefront</a>
+      <div>
+        <h1>{{ collection.title | default: 'Product Catalog' }}</h1>
+        <p id="catalogCount">
+          {% if collection.description != blank %}
+            {{ collection.description | strip_html | truncate: 180 }}
+          {% else %}
+            Every product in the Exclusive Essence assortment — human hair, care, color, tools and more.
+          {% endif %}
+        </p>
+      </div>
+    </div>
+
+    <div class="catalog-tools">
+      <div class="chips" role="navigation" aria-label="Departments">
+        <a class="chip{% if collection.handle == 'all' or ee_is_all and collection.handle != 'human-hair' and collection.handle != 'hair-care' %} active{% endif %}" href="{{ routes.all_products_collection_url }}">All</a>
+        {% assign dept_handles = 'human-hair,hair-care,hair-color,styling-edge,tools-accessories,braids-wigs-crochet,skin-body,beauty-fashion,essentials' | split: ',' %}
+        {% for handle in dept_handles %}
+          {% assign col = collections[handle] %}
+          {% if col.handle == handle %}
+            <a class="chip{% if collection.handle == handle %} active{% endif %}" href="{{ col.url }}">{{ col.title }}</a>
+          {% endif %}
+        {% endfor %}
+        {% for col in collections %}
+          {% unless dept_handles contains col.handle or col.handle == 'frontpage' or col.handle == 'all' %}
+            <a class="chip{% if collection.handle == col.handle %} active{% endif %}" href="{{ col.url }}">{{ col.title }}</a>
+          {% endunless %}
+        {% endfor %}
+      </div>
+      <div class="catalog-actions">
+        <label class="sr-only" for="SortBy">Sort</label>
+        <select id="SortBy" name="sort_by" aria-label="Sort products" onchange="window.location.href=this.value">
+          {% for option in collection.sort_options %}
+            <option value="{{ collection.url }}?sort_by={{ option.value }}" {% if collection.sort_by == option.value %}selected{% endif %}>{{ option.name }}</option>
+          {% endfor %}
+        </select>
+      </div>
+    </div>
+
+    {% paginate ee_collection.products by 48 %}
+      <p class="ee-catalog-count">{{ paginate.items }} products · Page {{ paginate.current_page }} of {{ paginate.pages }}</p>
+      {% if ee_collection.products.size == 0 %}
+        <div class="catalog-empty" style="display:block">
+          No products in this collection yet. Browse the full store catalog while department collections are created in Shopify Admin.
+          <div class="hero-actions" style="justify-content:center;margin-top:18px">
+            <a class="btn btn-primary" href="{{ routes.all_products_collection_url }}">View all products</a>
+          </div>
+        </div>
+      {% else %}
+        <div class="product-shelf">
+          {% for product in ee_collection.products %}
+            {% render 'product-card', product: product %}
+          {% endfor %}
+        </div>
+        <nav class="pagination" aria-label="Collection pages">
+          {{ paginate | default_pagination }}
+        </nav>
+      {% endif %}
+    {% endpaginate %}
   </div>
 </section>
 {% schema %}
-{"name":"Collection","settings":[]}
+{
+  "name": "Collection",
+  "settings": [
+    {"type":"range","id":"per_page","min":24,"max":48,"step":8,"label":"Products per page","default":48}
+  ]
+}
 {% endschema %}

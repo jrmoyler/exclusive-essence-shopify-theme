@@ -1,0 +1,51 @@
+{%- if request.page_type == 'product' and product -%}
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Product",
+  "name": {{ product.title | json }},
+  "url": {{ request.origin | append: product.url | json }},
+  "image": [{% for image in product.images %}{{ image | image_url: width: 2000 | prepend: 'https:' | json }}{% unless forloop.last %},{% endunless %}{% endfor %}],
+  "description": {{ product.description | strip_html | truncate: 300 | json }},
+  "sku": {{ product.selected_or_first_available_variant.sku | json }},
+  "brand": { "@type": "Brand", "name": {{ product.vendor | default: shop.name | json }} },
+  "offers": {
+    "@type": "Offer",
+    "url": {{ request.origin | append: product.url | json }},
+    "priceCurrency": {{ cart.currency.iso_code | json }},
+    "price": {{ product.selected_or_first_available_variant.price | money_without_currency | json }},
+    "availability": "{% if product.available %}https://schema.org/InStock{% else %}https://schema.org/OutOfStock{% endif %}",
+    "seller": { "@type": "Organization", "name": {{ shop.name | json }} }
+  }
+}
+</script>
+{%- elsif request.page_type == 'collection' and collection -%}
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "CollectionPage",
+  "name": {{ collection.title | json }},
+  "url": {{ request.origin | append: collection.url | json }}
+}
+</script>
+{%- else -%}
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "HairSalon",
+  "name": {{ shop.name | json }},
+  "url": {{ shop.url | json }},
+  "image": {{ 'b277e37070df.png' | asset_url | prepend: 'https:' | json }},
+  "address": {
+    "@type": "PostalAddress",
+    "streetAddress": "2100 Cleveland Ave",
+    "addressLocality": "Columbus",
+    "addressRegion": "OH",
+    "postalCode": "43211",
+    "addressCountry": "US"
+  },
+  "openingHours": ["Mo-Sa 10:00-22:00", "Su 12:00-18:00"],
+  "sameAs": ["https://www.instagram.com/shopexclusiveessence"]
+}
+</script>
+{%- endif -%}

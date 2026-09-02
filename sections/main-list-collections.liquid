@@ -1,0 +1,58 @@
+<section class="section departments refined-departments">
+  <div class="container">
+    <div class="section-title">
+      <div>
+        <h1>Shop by Department</h1>
+        <p>Collections from the Exclusive Essence catalog. Every product is also listed in the full catalog.</p>
+      </div>
+      <a class="text-link" href="{{ routes.all_products_collection_url }}">View all products →</a>
+    </div>
+    <div class="department-grid">
+      {% assign shown = 0 %}
+      {% for collection in collections %}
+        {% unless collection.handle == 'frontpage' %}
+          {% if collection.all_products_count > 0 or collection.products_count > 0 %}
+            <a class="department-card" href="{{ collection.url }}">
+              <div class="department-image">
+                {% if collection.featured_image %}
+                  {% render 'hi-res-image', image: collection.featured_image, alt: collection.title, sizes: '(min-width: 1100px) 12vw, 30vw' %}
+                {% else %}
+                  <img src="{{ 'e76907a047b4.webp' | asset_url }}" alt="{{ collection.title | escape }}">
+                {% endif %}
+              </div>
+              <div class="department-copy">
+                <strong>{{ collection.title }}</strong>
+                <span>{{ collection.all_products_count | default: collection.products_count }} products</span>
+              </div>
+            </a>
+            {% assign shown = shown | plus: 1 %}
+          {% endif %}
+        {% endunless %}
+      {% endfor %}
+      {% if shown == 0 %}
+        <a class="department-card" href="{{ routes.all_products_collection_url }}">
+          <div class="department-image"><img src="{{ '60c7840dc522.webp' | asset_url }}" alt="Human Hair"></div>
+          <div class="department-copy"><strong>Human Hair</strong><span>Weaves, bundles & lengths</span></div>
+        </a>
+        <a class="department-card" href="{{ routes.all_products_collection_url }}">
+          <div class="department-image"><img src="{{ '648c8aa57a0c.webp' | asset_url }}" alt="Hair Care"></div>
+          <div class="department-copy"><strong>Hair Care</strong><span>Wash day & treatments</span></div>
+        </a>
+        <a class="department-card" href="{{ routes.all_products_collection_url }}">
+          <div class="department-image"><img src="{{ '9d9f71cd7938.webp' | asset_url }}" alt="Hair Color"></div>
+          <div class="department-copy"><strong>Hair Color</strong><span>Semi-permanent & temporary</span></div>
+        </a>
+        <a class="department-card" href="{{ routes.all_products_collection_url }}">
+          <div class="department-image"><img src="{{ 'e76907a047b4.webp' | asset_url }}" alt="All products"></div>
+          <div class="department-copy"><strong>Full Catalog</strong><span>Every product in the store</span></div>
+        </a>
+      {% endif %}
+    </div>
+  </div>
+</section>
+{% schema %}
+{
+  "name": "Collections list",
+  "settings": []
+}
+{% endschema %}

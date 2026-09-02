@@ -1,9 +1,50 @@
-<article class="product-card">
-  <a href="{{ product.url }}">
-    {% if product.featured_image %}
-      <img src="{{ product.featured_image | image_url: width: 800 }}" alt="{{ product.title | escape }}">
+{% assign priced = product.price %}
+{% assign image = product.featured_image %}
+<article class="product-card" data-product-id="{{ product.id }}" data-handle="{{ product.handle }}">
+  <div class="product-media">
+    {% unless product.available %}
+      <span class="badge" style="background:#6b7280">Sold Out</span>
+    {% elsif product.tags contains 'New' or product.tags contains 'new' %}
+      <span class="badge">New</span>
     {% endif %}
-    <div class="product-title">{{ product.title }}</div>
-    <div class="price">{{ product.price | money }}</div>
-  </a>
+    <a class="product-media-link" href="{{ product.url }}" aria-label="{{ product.title | escape }}">
+      {% if image %}
+        {% render 'hi-res-image', image: image, alt: product.title, sizes: '(min-width: 1200px) 22vw, (min-width: 750px) 30vw, 48vw', loading: 'lazy' %}
+      {% else %}
+        <img loading="lazy" src="{{ 'e76907a047b4.webp' | asset_url }}" alt="{{ product.title | escape }}" width="800" height="800">
+      {% endif %}
+    </a>
+  </div>
+  <div class="product-body">
+    {% if product.vendor != blank %}
+      <div class="product-brand">{{ product.vendor }}</div>
+    {% endif %}
+    <div class="product-title"><a href="{{ product.url }}">{{ product.title }}</a></div>
+    <div class="product-meta">
+      <span class="price">
+        {% if product.price_varies %}
+          From {{ product.price_min | money }}
+        {% elsif priced > 0 %}
+          {{ product.price | money }}
+        {% else %}
+          In Store
+        {% endif %}
+      </span>
+      {% if product.compare_at_price > product.price %}
+        <span class="ee-compare">{{ product.compare_at_price | money }}</span>
+      {% endif %}
+    </div>
+    <div class="card-actions">
+      {% form 'product', product %}
+        <input type="hidden" name="id" value="{{ product.selected_or_first_available_variant.id }}">
+        <input type="hidden" name="quantity" value="1">
+        <button class="add-btn" type="submit" name="add" {% unless product.available %}disabled{% endunless %}>
+          {% if product.available %}Add to Cart{% else %}Sold Out{% endif %}
+        </button>
+      {% endform %}
+      <a class="quick-btn" href="{{ product.url }}" aria-label="View {{ product.title | escape }}">
+        <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"></circle><path d="m20 20-3.5-3.5"></path></svg>
+      </a>
+    </div>
+  </div>
 </article>

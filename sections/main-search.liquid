@@ -1,10 +1,36 @@
-<section class="container">
-  <h1>Search</h1>
-  <form action="{{ routes.search_url }}" method="get"><input type="search" name="q" value="{{ search.terms | escape }}"><button>Search</button></form>
-  {% for result in search.results %}
-    <p><a href="{{ result.url }}">{{ result.title }}</a></p>
-  {% endfor %}
+<section class="ee-shopify-main">
+  <div class="container">
+    <nav class="ee-breadcrumb" aria-label="Breadcrumb">
+      <a href="{{ routes.root_url }}">Home</a>
+      <span>/</span>
+      <span>Search</span>
+    </nav>
+    <h1>Search</h1>
+    <form class="search-shell" action="{{ routes.search_url }}" method="get" role="search" style="max-width:640px;margin:0 0 32px">
+      <input type="search" name="q" value="{{ search.terms | escape }}" placeholder="Search products, brands and categories..." aria-label="Search">
+      <input type="hidden" name="type" value="product">
+      <button type="submit" aria-label="Search"><svg class="icon"><circle cx="11" cy="11" r="7"></circle><path d="m20 20-3.5-3.5"></path></svg></button>
+    </form>
+    {% if search.performed %}
+      <p class="ee-lede">{% if search.results_count == 0 %}No products match “{{ search.terms }}”. Try a brand name or department.{% else %}{{ search.results_count }} result{% if search.results_count != 1 %}s{% endif %} for “{{ search.terms }}”.{% endif %}</p>
+      {% paginate search.results by 48 %}
+        <div class="product-shelf">
+          {% for item in search.results %}
+            {% if item.object_type == 'product' %}
+              {% render 'product-card', product: item %}
+            {% endif %}
+          {% endfor %}
+        </div>
+        <div class="pagination">{{ paginate | default_pagination }}</div>
+      {% endpaginate %}
+    {% else %}
+      <p class="ee-lede">Search the full Exclusive Essence catalog — hair, care, color, tools and more.</p>
+    {% endif %}
+  </div>
 </section>
 {% schema %}
-{"name":"Search","settings":[]}
+{
+  "name": "Search",
+  "settings": []
+}
 {% endschema %}

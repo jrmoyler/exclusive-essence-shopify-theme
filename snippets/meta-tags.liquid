@@ -1,0 +1,19 @@
+<meta name="theme-color" content="#fffefd">
+<meta name="color-scheme" content="light">
+<link rel="icon" href="{{ 'd5dc758fc2fe.png' | asset_url }}">
+<link rel="apple-touch-icon" href="{{ 'd5dc758fc2fe.png' | asset_url }}">
+{%- if page_description -%}
+  <meta name="description" content="{{ page_description | escape }}">
+{%- else -%}
+  <meta name="description" content="Exclusive Essence Hair & Beauty Emporium — premium human hair, hair care, color and beauty essentials. Columbus flagship at 2100 Cleveland Ave.">
+{%- endif -%}
+<meta property="og:site_name" content="{{ shop.name | escape }}">
+<meta property="og:locale" content="{{ request.locale.iso_code | default: 'en_US' }}">
+<meta property="og:type" content="{% if request.page_type == 'product' %}product{% else %}website{% endif %}">
+<meta property="og:title" content="{{ page_title | escape }}">
+<meta property="og:url" content="{{ canonical_url }}">
+{%- if product and product.featured_image -%}
+  <meta property="og:image" content="{{ product.featured_image | image_url: width: 1200 }}">
+{%- else -%}
+  <meta property="og:image" content="{{ '1fa97b138a46.jpg' | asset_url }}">
+{%- endif -%}

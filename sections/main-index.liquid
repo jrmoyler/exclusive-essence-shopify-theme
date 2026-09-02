@@ -1,17 +1,115 @@
-<section class="container">
-  <p class="gate-kicker">The Essence Way!</p>
-  <h1>Exclusive Essence</h1>
-  <p>Premium beauty supply for human hair, hair care, hair color, and essentials.</p>
-  {% if collections.all.products_count > 0 %}
-    <div class="catalog-grid">
-      {% for product in collections.all.products limit: 24 %}
-        {% render 'product-card', product: product %}
-      {% endfor %}
+
+<section class="curated-hero" aria-labelledby="heroTitle">
+  <div class="container">
+    <div class="curated-hero-shell">
+      <div class="curated-hero-copy">
+        <p class="curated-kicker">Exclusive Essence Hair &amp; Beauty Emporium</p>
+        <div class="curated-hero-headline">
+          <h1 id="heroTitle">Beauty essentials,<br><em>edited beautifully.</em></h1>
+          <img class="hero-owned-badge" src="{{ 'd5dc758fc2fe.png' | asset_url }}" alt="Black Owned business" width="220" height="220">
+        </div>
+        <p class="curated-lead">A premium beauty-supply storefront for human hair, hair care, color and everyday styling essentials—curated for every texture and every routine.</p>
+        <div class="hero-actions"><button class="btn btn-primary" data-filter-jump="All">Shop New Arrivals</button><a class="btn btn-secondary" href="#departments">Browse Departments</a></div>
+        <div class="curated-proof"><span>Professional-grade selection</span><span>Local Columbus pickup</span><span>Open seven days</span></div>
+      </div>
+      <div class="curated-hero-media">
+        <img src="{{ '1fa97b138a46.jpg' | asset_url }}" alt="New Exclusive Essence store locations coming soon in Dallas, Texas; Miami, Florida; New York, New York; and San Francisco, California" width="1600" height="900">
+      </div>
     </div>
-  {% else %}
-    <p>Add products in Shopify Admin and they will appear here.</p>
-  {% endif %}
+  </div>
 </section>
+
+<section class="store-rail refined-rail"><div class="container store-rail-grid">
+  <div class="rail-item"><div class="rail-icon"><svg class="icon"><path d="M3 7h13v10H3zM16 10h3l2 3v4h-5z"></path><circle cx="7" cy="19" r="2"></circle><circle cx="18" cy="19" r="2"></circle></svg></div><div><strong>Fast Shipping</strong><span>Reliable nationwide delivery</span></div></div>
+  <div class="rail-item"><div class="rail-icon"><svg class="icon"><rect x="4" y="9" width="16" height="11" rx="2"></rect><path d="M8 9V6a4 4 0 0 1 8 0v3"></path></svg></div><div><strong>Secure Checkout</strong><span>Shopify-ready purchase flow</span></div></div>
+  <div class="rail-item"><div class="rail-icon"><svg class="icon"><path d="M20 10c0 5-8 11-8 11S4 15 4 10a8 8 0 1 1 16 0Z"></path><circle cx="12" cy="10" r="2.5"></circle></svg></div><div><strong>Local Pickup</strong><span>2100 Cleveland Ave</span></div></div>
+  <div class="rail-item"><div class="rail-icon"><svg class="icon"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.6l-1-1a5.5 5.5 0 0 0-7.8 7.8l1 1L12 21l7.8-7.6 1-1a5.5 5.5 0 0 0 0-7.8Z"></path></svg></div><div><strong>Community Focused</strong><span>Beauty for every texture</span></div></div>
+</div></section>
+
+
+
+<section class="section departments refined-departments" id="departments"><div class="container"><div class="section-title"><div><h2>Shop by Department</h2><p>Clear, product-specific departments designed for fast beauty-supply shopping.</p></div><button class="text-link" data-filter-jump="All">Open full catalog →</button></div><div class="department-grid" id="departmentGrid"></div></div></section>
+
+<section class="section curated-campaigns" id="deals"><div class="container"><div class="section-title"><div><h2>Featured Collections</h2><p>Four restrained brand stories replace the crowded wall of individual products.</p></div></div><div class="collection-grid">
+  <button class="collection-card" aria-label="Shop hair care collection" data-filter-jump="Hair Care"><img src="{{ '34055b9882d2.webp' | asset_url }}" alt="Mielle hair-care collection"></button>
+  <button class="collection-card" aria-label="Shop styling collection" data-filter-jump="Hair Care"><img src="{{ 'eec669a463df.webp' | asset_url }}" alt="EBIN styling collection"></button>
+  <button class="collection-card" aria-label="Explore beauty essentials" data-filter-jump="All"><img src="{{ '90494d392304.webp' | asset_url }}" alt="KISS beauty collection"></button>
+  <button class="collection-card" aria-label="Shop texture care collection" data-filter-jump="Hair Care"><img src="{{ '7b96457dcf72.webp' | asset_url }}" alt="Cantu hair-care collection"></button>
+</div></div></section>
+
+<section class="section-sm brand-wall refined-brand-wall" id="brands"><div class="container"><div class="section-title compact-title"><div><h2>Brands Customers Know</h2><p>Authentic logo artwork from the beauty brands represented throughout the store.</p></div><button class="text-link" data-filter-jump="All">Explore the catalog →</button></div><div class="brand-marquee"><div class="brand-grid" id="brandGrid"></div></div></div></section>
+<section class="section editorial-flyers"><div class="container"><div class="section-title"><div><h2>Shop the Current Edit</h2><p>Embedded retail campaign artwork keeps every promotion visible and presentation-ready.</p></div></div><div class="flyer-grid">
+  <button class="flyer-card" data-filter-jump="Hair Care"><img src="{{ '284b253db2cc.webp' | asset_url }}" alt="Wash Day Essentials campaign"></button>
+  <button class="flyer-card" data-filter-jump="Hair Care"><img src="{{ 'c2281a6d35e4.webp' | asset_url }}" alt="Styling and edge-control campaign"></button>
+  <button class="flyer-card" data-filter-jump="Hair Color"><img src="{{ '0021a30355e3.webp' | asset_url }}" alt="Hair color campaign"></button>
+</div></div></section>
+
+<section class="section retail-band refined-store-band"><div class="container split-store"><div class="split-media"><div class="store-slideshow" data-store-slideshow data-start="0" role="group" aria-label="Inside the Exclusive Essence Columbus store"></div></div><div class="split-copy"><div class="eyebrow">Inside our Columbus flagship</div><h2>A real beauty-supply experience—online and in person.</h2><p>Browse a focused digital edit, then visit the full store for hands-on product discovery, more shades, more textures and local support.</p><div class="split-list"><div>Human hair and extensions</div><div>Hair care and treatments</div><div>Hair color and styling</div><div>Local pickup and store support</div></div><a class="btn btn-primary" href="#visit">Plan Your Visit</a></div></div></section>
+
+<section class="section curated-products" id="new"><div class="container"><div class="section-title"><div><h2>New &amp; Noteworthy</h2><p>A four-product edit keeps the homepage calm while the full assortment remains one click away.</p></div><button class="text-link" data-filter-jump="All">Shop all products →</button></div><div class="product-shelf" id="newShelf"></div></div></section>
+
+<section class="section-sm catalog-gateway"><div class="container"><div class="catalog-gateway-inner"><div><p class="curated-kicker">Ready to shop deeper?</p><h2>Open the complete product catalog.</h2><p>Search, filter, sort, save favorites and add products to the cart in a dedicated shopping view.</p></div><button class="btn btn-primary" id="openCatalogBtn">Browse All Products</button></div></div></section>
+
+<section class="section catalog dedicated-catalog is-open" id="catalog"><div class="container"><div class="catalog-view-head"><a class="catalog-back" href="{{ routes.root_url }}" id="catalogBackBtn">← Back to storefront</a><div><h2>Product Catalog</h2><p id="catalogCount">Every product in the current in-store assortment — {{ collections.all.products_count | default: 0 }} Shopify products plus the full Exclusive Essence catalog.</p></div></div><div class="catalog-tools"><div class="chips" id="categoryChips"></div><div class="catalog-actions"><select id="sortSelect" aria-label="Sort products"><option value="featured">Featured</option><option value="price-asc">Price: Low to High</option><option value="price-desc">Price: High to Low</option><option value="title">Name A–Z</option></select></div></div><div class="product-shelf" id="catalogGrid">
+<noscript>
+  {% paginate collections.all.products by 48 %}
+    {% for product in collections.all.products %}
+      {% render 'product-card', product: product %}
+    {% endfor %}
+    <div class="pagination">{{ paginate | default_pagination }}</div>
+  {% endpaginate %}
+</noscript>
+</div><div class="catalog-empty" id="catalogEmpty">No products match this search.</div><div class="load-wrap"><button class="btn btn-secondary" id="loadMoreBtn" type="button">Load More Products</button><button class="btn btn-primary" id="showAllBtn" type="button">Show all products</button></div></div></section>
+
+<section class="section instagram"><div class="container"><div class="section-title"><div><h2>Shop Our Feed</h2><p>Follow <strong>@shopexclusiveessence</strong> for arrivals, store updates and beauty inspiration.</p></div><a class="text-link" href="https://www.instagram.com/shopexclusiveessence" target="_blank" rel="noopener">Follow on Instagram →</a></div><div class="feed-slider" id="feedSlider" aria-roledescription="carousel" aria-label="Featured brand campaigns">
+<div class="feed-track" id="feedTrack"><div class="feed-slide"><img src="{{ 'f28da4f188ec.jpg' | asset_url }}" alt="4 Season Skin — discover your all-season glow" loading="lazy" decoding="async"></div><div class="feed-slide"><img src="{{ '8c48d39a940e.jpg' | asset_url }}" alt="Outre — discover the legendary Purple Pack, 100% human hair" loading="lazy" decoding="async"></div><div class="feed-slide"><img src="{{ '0992a013054b.jpg' | asset_url }}" alt="Murray's — legendary hold since 1925, pomades and beeswax" loading="lazy" decoding="async"></div><div class="feed-slide"><img src="{{ '9357f9ee2d1f.jpg' | asset_url }}" alt="got2b — rock your all-day hold with Glued styling" loading="lazy" decoding="async"></div><div class="feed-slide"><img src="{{ 'b7ab2261d6de.jpg' | asset_url }}" alt="Aunt Jackie's Curls & Coils — get the curls you crave, naturally" loading="lazy" decoding="async"></div><div class="feed-slide"><img src="{{ '38a6fd001945.jpg' | asset_url }}" alt="Adore — vibrant semi-permanent hair color, vegan and cruelty-free" loading="lazy" decoding="async"></div><div class="feed-slide"><img src="{{ 'ff9c4306dfc7.jpg' | asset_url }}" alt="Shake-N-Go MilkyWay — 100% human hair collection" loading="lazy" decoding="async"></div></div>
+<button class="feed-arrow feed-prev" id="feedPrev" type="button" aria-label="Previous banner">&#8249;</button>
+<button class="feed-arrow feed-next" id="feedNext" type="button" aria-label="Next banner">&#8250;</button>
+<div class="feed-dots" id="feedDots" role="tablist" aria-label="Choose banner"></div>
+</div></div></section>
+
+
+<section class="section-sm partners-spotlight" id="partners"><div class="container">
+<div class="section-title compact-title partners-head"><div><h2>Our Partners</h2></div><button class="text-link" data-filter-jump="All">Explore the catalog →</button></div>
+<p class="partners-lede">We're proud to be supported by a diverse network of partner agencies, both nationally and internationally, including physicians, faith-based organizations, and other trusted community partners. These collaborations allow us to serve our customers with care, compassion, and confidence — connecting them to resources beyond our doors while reflecting our shared commitment to quality, wellness, and community support.</p>
+<div class="partner-rotator" aria-label="Store partner logos">
+<div class="partner-tile"><img src="{{ '531fa22d0cf7.png' | asset_url }}" alt="Texas Association of Black Female Physicians logo" loading="lazy"></div>
+<div class="partner-tile"><img src="{{ '03a1868a2877.png' | asset_url }}" alt="FAVR Lifestyle logo" loading="lazy"></div>
+<div class="partner-tile"><img src="{{ '66352a2c5fcc.png' | asset_url }}" alt="4 Season Skin logo" loading="lazy"></div>
+</div>
+</div></section>
+<section class="section visit" id="visit"><div class="container visit-grid"><div class="visit-media"><div class="store-slideshow" data-store-slideshow data-photo-set="cities" data-start="0" role="group" aria-label="Exclusive Essence store cities"></div></div><div class="visit-copy"><h2>Visit Our Stores</h2><p>Shop the catalog in person and get help finding the right hair, color and care products for your routine. Our Columbus flagship is open now, with Dallas, Miami, New York and San Francisco on the way.</p><div class="visit-info"><div class="visit-row"><div class="rail-icon"><svg class="icon"><path d="M20 10c0 5-8 11-8 11S4 15 4 10a8 8 0 1 1 16 0Z"></path><circle cx="12" cy="10" r="2.5"></circle></svg></div><div><strong>Locations</strong><span>Columbus, OH — Open Now<br>Dallas &bull; Miami &bull; New York &bull; San Francisco — Coming Soon</span></div></div><div class="visit-row"><div class="rail-icon"><svg class="icon"><rect x="3" y="3" width="18" height="18" rx="5"></rect><circle cx="12" cy="12" r="4"></circle><circle cx="17.5" cy="6.5" r="1"></circle></svg></div><div><strong>Instagram</strong><span>@shopexclusiveessence</span></div></div></div><a class="btn btn-primary" href="#stores" data-open-stores>View Locations &amp; Hours</a></div></div></section>
+
+<section class="section stores-page dedicated-stores" id="stores"><div class="container">
+<div class="catalog-view-head"><button class="catalog-back" id="storesBackBtn" type="button">← Back to storefront</button><div><h2>Our Stores</h2><p>Five cities. One standard of premium hair &amp; beauty.</p></div></div>
+<div class="stores-grid">
+<article class="store-card is-open-store"><span class="store-badge open">Open Now</span><h3>Columbus, OH</h3>
+<div class="visit-info">
+<div class="visit-row"><div class="rail-icon"><svg class="icon"><path d="M20 10c0 5-8 11-8 11S4 15 4 10a8 8 0 1 1 16 0Z"></path><circle cx="12" cy="10" r="2.5"></circle></svg></div><div><strong>Address</strong><span>2100 Cleveland Ave, Columbus, OH 43211</span></div></div>
+<div class="visit-row"><div class="rail-icon"><svg class="icon"><circle cx="12" cy="12" r="9"></circle><path d="M12 7v5l3 2"></path></svg></div><div><strong>Hours</strong><span>Monday–Saturday: 10 AM–10 PM<br>Sunday: 12 PM–6 PM</span></div></div>
+<div class="visit-row"><div class="rail-icon"><svg class="icon"><rect x="3" y="3" width="18" height="18" rx="5"></rect><circle cx="12" cy="12" r="4"></circle><circle cx="17.5" cy="6.5" r="1"></circle></svg></div><div><strong>Instagram</strong><span>@shopexclusiveessence</span></div></div>
+</div>
+<a class="btn btn-primary" href="https://maps.google.com/?q=2100+Cleveland+Ave+Columbus+OH+43211" target="_blank" rel="noopener">Get Directions</a></article>
+<article class="store-card"><span class="store-badge soon">Coming Soon</span><h3>Dallas, TX</h3>
+<p class="store-note">Our second location is on the way. The address, hours and opening date will be announced first to the Essence List.</p>
+<a class="btn btn-secondary" href="#newsletterForm">Get Opening Updates</a></article>
+<article class="store-card"><span class="store-badge soon">Coming Soon</span><h3>Miami, FL</h3>
+<p class="store-note">Bringing the Essence standard to South Florida. Join the Essence List for the opening date, address and hours first.</p>
+<a class="btn btn-secondary" href="#newsletterForm">Get Opening Updates</a></article>
+<article class="store-card"><span class="store-badge soon">Coming Soon</span><h3>New York, NY</h3>
+<p class="store-note">The Emporium is coming to the city that sets the pace. Opening details drop first to the Essence List.</p>
+<a class="btn btn-secondary" href="#newsletterForm">Get Opening Updates</a></article>
+<article class="store-card"><span class="store-badge soon">Coming Soon</span><h3>San Francisco, CA</h3>
+<p class="store-note">West Coast, we see you. Address, hours and opening date announced first to the Essence List.</p>
+<a class="btn btn-secondary" href="#newsletterForm">Get Opening Updates</a></article>
+</div>
+</div></section>
+
 {% schema %}
-{"name":"Homepage","settings":[]}
+{
+  "name": "Homepage storefront",
+  "settings": [
+    {"type":"paragraph","content":"This section is the Exclusive Essence storefront converted from the original site. Products, cart and checkout use Shopify."}
+  ]
+}
 {% endschema %}

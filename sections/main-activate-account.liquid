@@ -1,0 +1,14 @@
+<section class="ee-shopify-main customer">
+  <div class="container">
+    <h1>Activate account</h1>
+    {% form 'activate_customer_password' %}
+      {{ form.errors | default_errors }}
+      <input type="password" name="customer[password]" placeholder="Password">
+      <input type="password" name="customer[password_confirmation]" placeholder="Confirm password">
+      <button class="btn btn-primary" type="submit">Activate</button>
+    {% endform %}
+  </div>
+</section>
+{% schema %}
+{ "name": "Activate account", "settings": [] }
+{% endschema %}
