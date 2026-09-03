@@ -1,35 +1,55 @@
 {% if section.settings.enable %}
+  {%- unless request.query_parameters.gate == 'skip' -%}
 <div class="entry-gate" id="entryGate" role="dialog" aria-modal="true" aria-labelledby="entryGateTitle">
   <div class="entry-gate-card">
-    <img class="gate-logo" src="{{ 'b277e37070df.png' | asset_url }}" alt="{{ shop.name }}">
-    <p class="gate-kicker">{{ section.settings.kicker }}</p>
-    <h2 id="entryGateTitle">{{ section.settings.title }}</h2>
-    <p>{{ section.settings.text }}</p>
+    <img class="gate-logo" src="{{ 'b277e37070df.png' | asset_url }}" alt="{{ shop.name | escape }}">
+
     {% form 'customer', class: 'entry-gate-form', id: 'entryGateForm' %}
-      <input type="hidden" name="contact[tags]" value="newsletter,essence-list,web-gate">
-      <input type="hidden" name="contact[accepts_marketing]" value="true">
-      <input class="ee-hp" type="text" name="contact[company]" tabindex="-1" aria-hidden="true" autocomplete="off">
-      <label class="sr-only" for="gateName">Full name</label>
-      <input id="gateName" type="text" name="contact[first_name]" placeholder="Full name" required autocomplete="name">
-      <label class="sr-only" for="gateEmail">Email address</label>
-      <input id="gateEmail" type="email" name="contact[email]" placeholder="Email address" required autocomplete="email">
-      <label class="sr-only" for="gatePhone">Phone number</label>
-      <input id="gatePhone" type="tel" name="contact[phone]" placeholder="Phone number" required autocomplete="tel" inputmode="tel" pattern="[0-9()+\-\s.]{7,}">
-      <button class="btn btn-primary" type="submit">Count Me In</button>
+      {% if form.posted_successfully? %}
+        <div class="gate-success" id="gateSuccess">
+          <p class="gate-kicker">You're In!</p>
+          <h2>Welcome to the Essence List.</h2>
+          <p>Your first-visit reward is ready — show this at the Columbus counter:</p>
+          <div class="gate-reward">
+            <span class="gate-reward-label">First-Visit Reward</span>
+            <strong id="gateRewardCode">{{ section.settings.reward_code | escape }}</strong>
+            <span class="gate-reward-note">10% off your first in-store purchase</span>
+          </div>
+          <div class="gate-success-actions">
+            <button class="btn btn-secondary" id="gateShareBtn" type="button">Share With a Friend</button>
+            <a class="btn btn-primary" id="gateEnterBtn" href="{{ routes.root_url }}">Enter the Store</a>
+          </div>
+        </div>
+        <script>
+          try { localStorage.setItem('eeGateDone', '1'); } catch (err) {}
+        </script>
+      {% else %}
+        <p class="gate-kicker">{{ section.settings.kicker }}</p>
+        <h2 id="entryGateTitle">{{ section.settings.title }}</h2>
+        <p>{{ section.settings.text }}</p>
+
+        {% if form.errors %}
+          <div class="ee-form-errors" role="alert">
+            {{ form.errors | default_errors }}
+          </div>
+        {% endif %}
+
+        <input type="hidden" name="contact[tags]" value="newsletter,essence-list,web-gate">
+        <input type="hidden" name="contact[accepts_marketing]" value="true">
+        <input class="ee-hp" type="text" name="contact[company]" tabindex="-1" aria-hidden="true" autocomplete="off">
+        <label class="sr-only" for="gateName">Full name</label>
+        <input id="gateName" type="text" name="contact[first_name]" placeholder="Full name" required autocomplete="name">
+        <label class="sr-only" for="gateEmail">Email address</label>
+        <input id="gateEmail" type="email" name="contact[email]" placeholder="Email address" required autocomplete="email">
+        <label class="sr-only" for="gatePhone">Phone number</label>
+        <input id="gatePhone" type="tel" name="contact[phone]" placeholder="Phone number" required autocomplete="tel" inputmode="tel">
+        <button class="btn btn-primary" type="submit">Count Me In</button>
+        <a class="gate-skip" id="entryGateSkip" href="{{ request.path }}?gate=skip">Continue to the store</a>
+      {% endif %}
     {% endform %}
-    <button class="gate-skip" id="entryGateSkip" type="button">Continue to the store</button>
-    <div class="gate-success" id="gateSuccess" hidden>
-      <p class="gate-kicker">You're In!</p>
-      <h2>Welcome to the Essence List.</h2>
-      <p>Your first-visit reward is ready — show this at the Columbus counter:</p>
-      <div class="gate-reward"><span class="gate-reward-label">First-Visit Reward</span><strong id="gateRewardCode">{{ section.settings.reward_code }}</strong><span class="gate-reward-note">10% off your first in-store purchase</span></div>
-      <div class="gate-success-actions">
-        <button class="btn btn-secondary" id="gateShareBtn" type="button">Share With a Friend</button>
-        <button class="btn btn-primary" id="gateEnterBtn" type="button">Enter the Store</button>
-      </div>
-    </div>
   </div>
 </div>
+  {%- endunless -%}
 {% endif %}
 
 {% schema %}
