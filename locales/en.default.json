@@ -1,5 +1,10 @@
 {
   "general": {
+    "404": {
+      "title": "This page is not on the shelf.",
+      "subtext": "The link may be out of date. Head back to the storefront or browse the catalog.",
+      "button": "Back to storefront"
+    },
     "meta": {
       "tags": "Tagged \"{{ tags }}\"",
       "page": "Page {{ page }}"
@@ -21,11 +26,6 @@
       "submit": "Search",
       "no_results": "No products match “{{ terms }}”.",
       "results_for": "{{ count }} results for “{{ terms }}”"
-    },
-    "404": {
-      "title": "This page is not on the shelf.",
-      "subtext": "The link may be out of date. Head back to the storefront or browse the catalog.",
-      "button": "Back to storefront"
     },
     "breadcrumbs": {
       "home": "Home",
@@ -119,5 +119,11 @@
     "checkout": {
       "order_summary": "Order summary"
     }
+  },
+  "order_summary": {
+    "apply_discount_button_label": "Apply",
+    "subtotal_label": "Subtotal",
+    "shipping_label": "Shipping",
+    "total_label": "Total"
   }
 }
