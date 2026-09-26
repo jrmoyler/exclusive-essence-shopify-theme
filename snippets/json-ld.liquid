@@ -13,7 +13,7 @@
     "@type": "Offer",
     "url": {{ request.origin | append: product.url | json }},
     "priceCurrency": {{ cart.currency.iso_code | json }},
-    "price": {{ product.selected_or_first_available_variant.price | money_without_currency | json }},
+    "price": {{ product.selected_or_first_available_variant.price | divided_by: 100.0 | json }},
     "availability": "{% if product.available %}https://schema.org/InStock{% else %}https://schema.org/OutOfStock{% endif %}",
     "seller": { "@type": "Organization", "name": {{ shop.name | json }} }
   }

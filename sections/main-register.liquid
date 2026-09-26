@@ -18,7 +18,7 @@
       <label class="sr-only" for="RegisterEmail">Email</label>
       <input id="RegisterEmail" type="email" name="customer[email]" placeholder="Email address" required autocomplete="email">
       <label class="sr-only" for="RegisterPassword">Password</label>
-      <input id="RegisterPassword" type="password" name="customer[password]" placeholder="Password" required autocomplete="new-password">
+      <input id="RegisterPassword" type="password" name="customer[password]" placeholder="Password (5+ characters)" required minlength="5" autocomplete="new-password">
       <button class="btn btn-primary" type="submit">Create account</button>
       <a href="{{ routes.account_login_url }}">Already have an account? Sign in</a>
     {% endform %}

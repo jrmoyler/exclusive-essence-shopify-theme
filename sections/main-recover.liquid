@@ -3,7 +3,9 @@
     <h1>Forgot password</h1>
     {% form 'recover_customer_password' %}
       {{ form.errors | default_errors }}
-      <input type="email" name="email" placeholder="Email address" required>
+      {% if form.posted_successfully? %}<p class="note" role="status">Check your inbox for a reset link.</p>{% endif %}
+      <label class="sr-only" for="RecoverEmail2">Email address</label>
+      <input id="RecoverEmail2" type="email" name="email" placeholder="Email address" required autocomplete="email">
       <button class="btn btn-primary" type="submit">Send reset link</button>
     {% endform %}
   </div>

@@ -27,7 +27,7 @@
                       {% if item.image %}
                         {% render 'hi-res-image', image: item.image, alt: item.title, sizes: '84px', class: 'ee-cart-thumb' %}
                       {% else %}
-                        <img class="ee-cart-thumb" src="{{ 'e76907a047b4.webp' | asset_url }}" alt="{{ item.title | escape }}">
+                        <img class="ee-cart-thumb" src="{{ 'e76907a047b4.webp' | asset_url }}" alt="{{ item.title | escape }}" width="440" height="380">
                       {% endif %}
                     </a>
                     <div>
@@ -41,19 +41,22 @@
                   </div>
                 </td>
                 <td>
-                  <input type="number" name="updates[]" value="{{ item.quantity }}" min="0" aria-label="Quantity for {{ item.title | escape }}">
+                  <input type="number" name="updates[]" value="{{ item.quantity }}" min="0" step="1" inputmode="numeric" aria-label="Quantity for {{ item.title | escape }}">
                 </td>
-                <td><b>{{ item.final_line_price | money }}</b></td>
+                <td>{% if item.original_line_price != item.final_line_price %}<s class="ee-compare">{{ item.original_line_price | money }}</s><br>{% endif %}<b>{{ item.final_line_price | money }}</b></td>
               </tr>
             {% endfor %}
           </tbody>
         </table>
         <div class="cart-summary">
+          {%- for discount in cart.cart_level_discount_applications -%}
+            <div class="total-row ee-discount"><span>{{ discount.title }}</span><span>−{{ discount.total_allocated_amount | money }}</span></div>
+          {%- endfor -%}
           <div class="total-row"><span>Subtotal</span><span>{{ cart.total_price | money }}</span></div>
           <p class="ee-lede">Taxes and shipping calculated at checkout. Columbus pickup is available at 2100 Cleveland Ave.</p>
-          <p class="ee-lede">Prefer to pay over time? Open the cart drawer and choose <strong>Layaway Plan</strong> — 25% due today, 45-day term.</p>
-          <button class="btn btn-secondary" type="submit" name="update">Update cart</button>
           <button class="btn btn-primary" type="submit" name="checkout">Checkout Securely</button>
+          <button class="btn btn-secondary" type="submit" name="update">Update cart</button>
+          <p class="ee-lede">Prefer to pay over time? <button type="button" class="ee-link-btn" data-start-layaway>Request a Layaway Plan</button> — 25% deposit, 45-day term.</p>
         </div>
       </form>
     {% endif %}

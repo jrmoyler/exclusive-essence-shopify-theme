@@ -17,7 +17,7 @@
                 {% if collection.featured_image %}
                   {% render 'hi-res-image', image: collection.featured_image, alt: collection.title, sizes: '(min-width: 1100px) 12vw, 30vw' %}
                 {% else %}
-                  <img src="{{ 'e76907a047b4.webp' | asset_url }}" alt="{{ collection.title | escape }}">
+                  <img src="{{ 'e76907a047b4.webp' | asset_url }}" alt="{{ collection.title | escape }}" width="440" height="380">
                 {% endif %}
               </div>
               <div class="department-copy">
@@ -31,19 +31,19 @@
       {% endfor %}
       {% if shown == 0 %}
         <a class="department-card" href="{{ routes.all_products_collection_url }}">
-          <div class="department-image"><img src="{{ '60c7840dc522.webp' | asset_url }}" alt="Human Hair"></div>
+          <div class="department-image"><img src="{{ '60c7840dc522.webp' | asset_url }}" alt="Human Hair" width="440" height="380"></div>
           <div class="department-copy"><strong>Human Hair</strong><span>Weaves, bundles & lengths</span></div>
         </a>
         <a class="department-card" href="{{ routes.all_products_collection_url }}">
-          <div class="department-image"><img src="{{ '648c8aa57a0c.webp' | asset_url }}" alt="Hair Care"></div>
+          <div class="department-image"><img src="{{ '648c8aa57a0c.webp' | asset_url }}" alt="Hair Care" width="440" height="380"></div>
           <div class="department-copy"><strong>Hair Care</strong><span>Wash day & treatments</span></div>
         </a>
         <a class="department-card" href="{{ routes.all_products_collection_url }}">
-          <div class="department-image"><img src="{{ '9d9f71cd7938.webp' | asset_url }}" alt="Hair Color"></div>
+          <div class="department-image"><img src="{{ '9d9f71cd7938.webp' | asset_url }}" alt="Hair Color" width="440" height="380"></div>
           <div class="department-copy"><strong>Hair Color</strong><span>Semi-permanent & temporary</span></div>
         </a>
         <a class="department-card" href="{{ routes.all_products_collection_url }}">
-          <div class="department-image"><img src="{{ 'e76907a047b4.webp' | asset_url }}" alt="All products"></div>
+          <div class="department-image"><img src="{{ 'e76907a047b4.webp' | asset_url }}" alt="All products" width="440" height="380"></div>
           <div class="department-copy"><strong>Full Catalog</strong><span>Every product in the store</span></div>
         </a>
       {% endif %}

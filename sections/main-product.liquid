@@ -11,7 +11,7 @@
         <a href="{{ collection.url }}">{{ collection.title }}</a>
       {% elsif product.type != blank %}
         <span aria-hidden="true">/</span>
-        <a href="{{ routes.all_products_collection_url }}">{{ product.type }}</a>
+        <a href="{{ product.type | url_for_type }}">{{ product.type }}</a>
       {% endif %}
       <span aria-hidden="true">/</span>
       <span aria-current="page">{{ product.title }}</span>
@@ -27,9 +27,9 @@
           {% endif %}
         </button>
         {% if product.images.size > 1 %}
-          <div class="ee-thumbs" role="list">
+          <div class="ee-thumbs">
             {% for image in product.images %}
-              <button type="button" class="ee-thumb{% if image == featured %} is-active{% endif %}" data-full="{{ image | image_url: width: 2000 }}" data-srcset="{{ image | image_url: width: 800 }} 800w, {{ image | image_url: width: 1200 }} 1200w, {{ image | image_url: width: 2000 }} 2000w" aria-label="Show image {{ forloop.index }}">
+              <button type="button" class="ee-thumb{% if image == featured %} is-active{% endif %}" data-full="{{ image | image_url: width: 2000 }}" data-srcset="{{ image | image_url: width: 800 }} 800w, {{ image | image_url: width: 1200 }} 1200w, {{ image | image_url: width: 2000 }} 2000w" aria-label="Show image {{ forloop.index }}" aria-pressed="{% if image == featured %}true{% else %}false{% endif %}">
                 <img src="{{ image | image_url: width: 240 }}" srcset="{{ image | image_url: width: 160 }} 160w, {{ image | image_url: width: 320 }} 320w" alt="{{ image.alt | default: product.title | escape }}" width="120" height="120" loading="lazy">
               </button>
             {% endfor %}
@@ -38,17 +38,22 @@
       </div>
 
       <div class="ee-product-copy">
-        {% if product.vendor != blank %}
+        {% if section.settings.show_vendor and product.vendor != blank %}
           <div class="product-brand">{{ product.vendor }}{% if product.type != blank %} · {{ product.type }}{% endif %}</div>
         {% endif %}
         <h1>{{ product.title }}</h1>
-        <div class="ee-price" id="eePrice">
-          {{ current_variant.price | money }}
-          {% if current_variant.compare_at_price > current_variant.price %}
-            <span class="ee-compare">{{ current_variant.compare_at_price | money }}</span>
-          {% endif %}
+        <div class="ee-price" id="eePrice" aria-live="polite">
+          {%- if current_variant.price > 0 -%}
+            <span data-price>{{ current_variant.price | money }}</span>
+            <s class="ee-compare" data-compare{% unless current_variant.compare_at_price > current_variant.price %} hidden{% endunless %}>{{ current_variant.compare_at_price | money }}</s>
+          {%- else -%}
+            <span data-price>Price available in store</span>
+            <s class="ee-compare" data-compare hidden></s>
+          {%- endif -%}
         </div>
-        <p class="ee-pickup">In stock for pickup at 2100 Cleveland Ave, Columbus · Mon–Sat 10 AM–10 PM · Sun 12–6 PM</p>
+        {% if section.settings.show_pickup %}
+          <p class="ee-pickup">{% if product.available %}Available for pickup{% else %}Ask about availability{% endif %} at 2100 Cleveland Ave, Columbus · Mon–Sat 10 AM–10 PM · Sun 12–6 PM</p>
+        {% endif %}
 
         {% form 'product', product, class: 'ee-form', id: 'eeProductForm', data-product-form: '' %}
           {% unless product.has_only_default_variant %}
@@ -59,7 +64,7 @@
                   <div class="ee-swatches">
                     {% for value in option.values %}
                       <label class="ee-swatch">
-                        <input type="radio" name="options[{{ option.name }}]" value="{{ value | escape }}" {% if option.selected_value == value %}checked{% endif %}>
+                        <input type="radio" name="options[{{ option.name | escape }}]" value="{{ value | escape }}" {% if option.selected_value == value %}checked{% endif %}>
                         <span>{{ value }}</span>
                       </label>
                     {% endfor %}
@@ -69,21 +74,37 @@
             {% endfor %}
           {% endunless %}
           <script type="application/json" id="eeVariantJson">
-            {{ product.variants | json }}
+            [
+            {%- for v in product.variants -%}
+              {%- if v.featured_image -%}
+                {%- capture v_srcset -%}{{ v.featured_image | image_url: width: 800 }} 800w, {{ v.featured_image | image_url: width: 1200 }} 1200w, {{ v.featured_image | image_url: width: 2000 }} 2000w{%- endcapture -%}
+              {%- endif -%}
+              {"id":{{ v.id }},"options":{{ v.options | json }},"price":{{ v.price }},"compare_at_price":{{ v.compare_at_price | default: 0 }},"available":{{ v.available }}{% if v.featured_image %},"image":{{ v.featured_image | image_url: width: 1200 | json }},"image_srcset":{{ v_srcset | json }}{% endif %}}{% unless forloop.last %},{% endunless %}
+            {%- endfor -%}
+            ]
           </script>
           <input type="hidden" name="id" id="eeVariantId" value="{{ current_variant.id }}">
           <div class="ee-qty">
             <label for="Quantity-{{ section.id }}">Qty</label>
             <div class="ee-qty-stepper">
               <button type="button" data-qty-delta="-1" aria-label="Decrease quantity">−</button>
-              <input id="Quantity-{{ section.id }}" type="number" name="quantity" value="1" min="1" inputmode="numeric">
+              <input id="Quantity-{{ section.id }}" type="number" name="quantity" value="1" min="1" step="1" inputmode="numeric">
               <button type="button" data-qty-delta="1" aria-label="Increase quantity">+</button>
             </div>
           </div>
-          <button class="btn btn-primary" type="submit" name="add" id="eeAddBtn" {% unless current_variant.available %}disabled{% endunless %}>
-            {% if current_variant.available %}Add to Cart{% else %}Sold Out{% endif %}
+          {%- liquid
+            assign can_buy = false
+            if current_variant.available and current_variant.price > 0
+              assign can_buy = true
+            endif
+          -%}
+          <button class="btn btn-primary" type="submit" name="add" id="eeAddBtn" {% unless can_buy %}disabled{% endunless %}>
+            {% if current_variant.available == false %}Sold Out{% elsif current_variant.price == 0 %}Available In Store{% else %}Add to Cart{% endif %}
           </button>
-          <a class="btn btn-secondary" href="{{ routes.all_products_collection_url }}">Keep shopping</a>
+          <button class="btn btn-secondary ee-wish-btn" type="button" data-wish-handle="{{ product.handle }}" data-wish-title="{{ product.title | escape }}" aria-pressed="false">
+            <svg class="icon" aria-hidden="true"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.6l-1-1a5.5 5.5 0 0 0-7.8 7.8l1 1L12 21l7.8-7.6 1-1a5.5 5.5 0 0 0 0-7.8Z"></path></svg>
+            <span data-wish-text>Save to Wishlist</span>
+          </button>
         {% endform %}
 
         {% if product.description != blank %}
@@ -94,7 +115,7 @@
         {% endif %}
         <details class="ee-accordion">
           <summary>Pickup & shipping</summary>
-          <p>Local pickup at the Columbus flagship, 2100 Cleveland Ave. Nationwide shipping at checkout. Layaway is available in-store and from the cart drawer.</p>
+          <p>Local pickup at the Columbus flagship, 2100 Cleveland Ave. Shipping options and rates are shown at checkout. Layaway can be requested from the cart or in-store.</p>
         </details>
       </div>
     </div>
@@ -132,83 +153,91 @@
 
 <script>
 (function(){
-  const thumbs = document.querySelectorAll('.ee-thumb');
-  const main = document.querySelector('.ee-main-photo');
-  const lightbox = document.getElementById('eeLightbox');
-  const lightImg = document.getElementById('eeLightboxImg');
+  var thumbs = document.querySelectorAll('.ee-thumb');
+  var main = document.querySelector('.ee-main-photo');
+  var lightbox = document.getElementById('eeLightbox');
+  var lightImg = document.getElementById('eeLightboxImg');
+  function showImage(src, srcset){
+    if(!main || !src) return;
+    if(srcset){ main.srcset = srcset; } else { main.removeAttribute('srcset'); }
+    main.src = src;
+  }
   thumbs.forEach(function(btn){
     btn.addEventListener('click', function(){
-      thumbs.forEach(function(b){ b.classList.remove('is-active'); });
-      btn.classList.add('is-active');
-      if(main){
-        main.src = btn.dataset.full;
-        if(btn.dataset.srcset) main.srcset = btn.dataset.srcset;
-      }
+      thumbs.forEach(function(b){ b.classList.remove('is-active'); b.setAttribute('aria-pressed','false'); });
+      btn.classList.add('is-active'); btn.setAttribute('aria-pressed','true');
+      showImage(btn.dataset.full, btn.dataset.srcset);
     });
   });
   document.getElementById('eeMainMedia')?.addEventListener('click', function(){
-    if(!main || !lightbox) return;
+    if(!main || !lightbox || typeof lightbox.showModal !== 'function') return;
     lightImg.src = main.currentSrc || main.src;
     lightbox.showModal();
   });
   document.querySelector('[data-close-lightbox]')?.addEventListener('click', function(){ lightbox.close(); });
   lightbox?.addEventListener('click', function(e){ if(e.target === lightbox) lightbox.close(); });
 
-  const form = document.getElementById('eeProductForm');
-  const variantInput = document.getElementById('eeVariantId');
-  const addBtn = document.getElementById('eeAddBtn');
-  const priceEl = document.getElementById('eePrice');
-  let variants = [];
+  var form = document.getElementById('eeProductForm');
+  if(!form) return;
+  var variantInput = document.getElementById('eeVariantId');
+  var addBtn = document.getElementById('eeAddBtn');
+  var priceEl = document.querySelector('#eePrice [data-price]');
+  var compareEl = document.querySelector('#eePrice [data-compare]');
+  var qtyInput = form.querySelector('input[name="quantity"]');
+  var variants = [];
   try { variants = JSON.parse(document.getElementById('eeVariantJson').textContent); } catch(e) {}
-  function selectedOptions(){
-    return Array.from(form.querySelectorAll('fieldset')).map(function(fs){
-      const checked = fs.querySelector('input:checked');
-      return checked ? checked.value : '';
-    });
+  function money(cents){
+    return window.eeFormatMoney ? window.eeFormatMoney(cents) : '$' + (cents/100).toFixed(2);
   }
   function findVariant(){
-    const opts = selectedOptions();
-    if(!opts.length) return variants[0];
+    var opts = Array.prototype.map.call(form.querySelectorAll('fieldset'), function(fs){
+      var checked = fs.querySelector('input:checked');
+      return checked ? checked.value : null;
+    });
+    if(!opts.length) return variants[0] || null;
     return variants.find(function(v){
       return opts.every(function(o,i){ return v.options[i] === o; });
-    }) || variants[0];
+    }) || null;
   }
-  form?.addEventListener('change', function(){
-    const v = findVariant();
-    if(!v) return;
+  function update(initial){
+    var v = findVariant();
+    if(!v){
+      addBtn.disabled = true;
+      addBtn.textContent = 'Unavailable';
+      if(priceEl) priceEl.textContent = 'This combination is unavailable';
+      if(compareEl) compareEl.hidden = true;
+      return;
+    }
     variantInput.value = v.id;
-    if(priceEl){
-      const money = (window.EE_MONEY_FORMAT || '${{amount}}').replace('{{amount}}', (v.price/100).toFixed(2));
-      priceEl.childNodes[0].textContent = ' $' + (v.price/100).toFixed(2) + ' ';
+    if(priceEl) priceEl.textContent = v.price > 0 ? money(v.price) : 'Price available in store';
+    if(compareEl){
+      compareEl.hidden = !(v.compare_at_price > v.price);
+      compareEl.textContent = v.compare_at_price > v.price ? money(v.compare_at_price) : '';
     }
-    if(addBtn){
-      addBtn.disabled = !v.available;
-      addBtn.textContent = v.available ? 'Add to Cart' : 'Sold Out';
-    }
+    addBtn.disabled = !(v.available && v.price > 0);
+    addBtn.textContent = !v.available ? 'Sold Out' : (v.price > 0 ? 'Add to Cart' : 'Available In Store');
+    if(initial) return;
+    if(v.image) showImage(v.image, v.image_srcset);
+    try {
+      var url = new URL(window.location.href);
+      url.searchParams.set('variant', v.id);
+      window.history.replaceState({}, '', url.toString());
+    } catch(e) {}
+  }
+  form.addEventListener('change', function(e){
+    if(e.target.name && e.target.name.indexOf('options[') === 0) update();
   });
-  form?.querySelectorAll('[data-qty-delta]').forEach(function(btn){
+  form.querySelectorAll('[data-qty-delta]').forEach(function(btn){
     btn.addEventListener('click', function(){
-      const input = form.querySelector('input[name="quantity"]');
-      const next = Math.max(1, Number(input.value || 1) + Number(btn.dataset.qtyDelta));
-      input.value = String(next);
+      var next = Math.max(1, (parseInt(qtyInput.value, 10) || 1) + Number(btn.dataset.qtyDelta));
+      qtyInput.value = String(next);
     });
   });
-  form?.addEventListener('submit', function(e){
-    if(!window.fetch) return;
-    e.preventDefault();
-    const data = new FormData(form);
-    fetch((window.EE_ROUTES && EE_ROUTES.cartAdd) || '/cart/add.js', {
-      method: 'POST',
-      body: data,
-      headers: { 'X-Requested-With': 'XMLHttpRequest' }
-    }).then(function(r){
-      if(r.ok){
-        window.location.href = (window.EE_ROUTES && EE_ROUTES.cart) || '/cart';
-      } else {
-        form.submit();
-      }
-    }).catch(function(){ form.submit(); });
+  qtyInput?.addEventListener('change', function(){
+    var n = parseInt(qtyInput.value, 10);
+    qtyInput.value = String(n > 0 ? n : 1);
   });
+  if(form.querySelector('fieldset')) update(true);
 })();
 </script>
 

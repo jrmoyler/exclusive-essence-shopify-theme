@@ -4,8 +4,8 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <title>
-    {{ page_title }}{% if current_tags %} – {{ current_tags | join: ', ' }}{% endif %}{% if current_page != 1 %} – Page {{ current_page }}{% endif %}
-    {% unless page_title contains shop.name %} – {{ shop.name }}{% endunless %}
+    {{- page_title -}}{% if current_tags %} – {{ current_tags | join: ', ' }}{% endif %}{% if current_page != 1 %} – Page {{ current_page }}{% endif %}
+    {%- unless page_title contains shop.name %} – {{ shop.name }}{% endunless -%}
   </title>
   <link rel="canonical" href="{{ canonical_url }}">
   {% render 'meta-tags' %}
@@ -21,26 +21,14 @@
       root: {{ routes.root_url | json }},
       cart: {{ routes.cart_url | json }},
       cartAdd: {{ routes.cart_add_url | json }},
-      cartUpdate: {{ routes.cart_update_url | json }},
+      cartChange: {{ routes.cart_change_url | json }},
       account: {{ routes.account_url | json }},
       search: {{ routes.search_url | json }},
       collections: {{ routes.all_products_collection_url | json }}
     };
     window.EE_CART_COUNT = {{ cart.item_count }};
     window.EE_MONEY_FORMAT = {{ shop.money_format | json }};
-    window.EE_IS_INDEX = {{ template.name | json }} === 'index';
-    window.EE_COLLECTION_MAP = {
-      "All": {{ routes.all_products_collection_url | json }},
-      "Human Hair": {% if collections['human-hair'].handle == 'human-hair' %}{{ collections['human-hair'].url | json }}{% else %}{{ routes.all_products_collection_url | json }}{% endif %},
-      "Hair Care": {% if collections['hair-care'].handle == 'hair-care' %}{{ collections['hair-care'].url | json }}{% else %}{{ routes.all_products_collection_url | json }}{% endif %},
-      "Hair Color": {% if collections['hair-color'].handle == 'hair-color' %}{{ collections['hair-color'].url | json }}{% else %}{{ routes.all_products_collection_url | json }}{% endif %},
-      "Styling & Edge": {% if collections['styling-edge'].handle == 'styling-edge' %}{{ collections['styling-edge'].url | json }}{% else %}{{ routes.all_products_collection_url | json }}{% endif %},
-      "Tools & Accessories": {% if collections['tools-accessories'].handle == 'tools-accessories' %}{{ collections['tools-accessories'].url | json }}{% else %}{{ routes.all_products_collection_url | json }}{% endif %},
-      "Braids, Wigs & Crochet": {% if collections['braids-wigs-crochet'].handle == 'braids-wigs-crochet' %}{{ collections['braids-wigs-crochet'].url | json }}{% else %}{{ routes.all_products_collection_url | json }}{% endif %},
-      "Skin & Body": {% if collections['skin-body'].handle == 'skin-body' %}{{ collections['skin-body'].url | json }}{% else %}{{ routes.all_products_collection_url | json }}{% endif %},
-      "Beauty & Fashion": {% if collections['beauty-fashion'].handle == 'beauty-fashion' %}{{ collections['beauty-fashion'].url | json }}{% else %}{{ routes.all_products_collection_url | json }}{% endif %},
-      "Essentials": {% if collections['essentials'].handle == 'essentials' %}{{ collections['essentials'].url | json }}{% else %}{{ routes.all_products_collection_url | json }}{% endif %}
-    };
+    window.EE_FALLBACK_IMAGE = {{ 'e76907a047b4.webp' | asset_url | json }};
   </script>
   <style>
     :root{
@@ -73,9 +61,6 @@
   </main>
   {% sections 'footer-group' %}
   {% render 'overlays' %}
-  {% if template.name == 'index' %}
-    <script src="{{ 'ee-catalog.js' | asset_url }}" defer></script>
-  {% endif %}
   <script src="{{ 'ee-storefront.js' | asset_url }}" defer></script>
 </body>
 </html>

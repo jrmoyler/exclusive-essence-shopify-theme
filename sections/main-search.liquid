@@ -7,7 +7,7 @@
     </nav>
     <h1>{% if search.performed %}Results for “{{ search.terms | escape }}”{% else %}Search the catalog{% endif %}</h1>
     <form class="search-shell" action="{{ routes.search_url }}" method="get" role="search" style="max-width:640px;margin:0 0 32px">
-      <input type="search" name="q" value="{{ search.terms | escape }}" placeholder="Search products, brands and categories..." aria-label="Search" autofocus>
+      <input type="search" name="q" value="{{ search.terms | escape }}" placeholder="Search products, brands and categories..." aria-label="Search"{% unless search.performed %} autofocus{% endunless %}>
       <input type="hidden" name="type" value="product">
       <button type="submit" aria-label="Search"><svg class="icon"><circle cx="11" cy="11" r="7"></circle><path d="m20 20-3.5-3.5"></path></svg></button>
     </form>
@@ -28,7 +28,7 @@
             {% endif %}
           {% endfor %}
         </div>
-        <nav class="pagination" aria-label="Search pages">{{ paginate | default_pagination }}</nav>
+        {% if paginate.pages > 1 %}<nav class="pagination" aria-label="Search pages">{{ paginate | default_pagination: next: 'Next ›', previous: '‹ Previous' }}</nav>{% endif %}
       {% endpaginate %}
       {% if search.results_count == 0 %}
         <div class="catalog-tools" style="margin-top:12px">

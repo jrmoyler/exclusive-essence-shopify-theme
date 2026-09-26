@@ -18,6 +18,9 @@
           <input type="password" name="customer[password]" id="CustomerPassword" placeholder="Password" required autocomplete="current-password">
           <button class="btn btn-primary" type="submit">Sign in</button>
           <a href="#recover">Forgot password?</a>
+          {% if shop.customer_accounts_optional %}
+            <p class="ee-lede" style="margin:12px 0 0">Just checking out? <a href="{{ routes.cart_url }}">Continue as a guest</a> — no account needed.</p>
+          {% endif %}
         {% endform %}
       </div>
       <div>
@@ -33,9 +36,10 @@
       {% form 'recover_customer_password' %}
         {{ form.errors | default_errors }}
         {% if form.posted_successfully? %}
-          <p class="note">Check your inbox for a reset link.</p>
+          <p class="note" role="status">Check your inbox for a reset link.</p>
         {% endif %}
-        <input type="email" name="email" placeholder="Email address" required autocomplete="email">
+        <label class="sr-only" for="RecoverEmail">Email address</label>
+        <input type="email" name="email" id="RecoverEmail" placeholder="Email address" required autocomplete="email">
         <button class="btn btn-secondary" type="submit">Send reset link</button>
         <a href="#login">Back to sign in</a>
       {% endform %}
