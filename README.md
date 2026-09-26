@@ -7,13 +7,13 @@ checkout, accounts, collections, and product pages.
 
 This branch is a full polish pass over the starter theme:
 
-- **699 products** merchandised in the homepage catalog (Shopify storefront + original assortment)
+- **One real Shopify cart everywhere** — every Add to Cart button uses `/cart/add.js`; the cart drawer reads `/cart.js`, changes quantities with `/cart/change.js`, and checks out through Shopify checkout
 - **High-resolution product shots** (Shopify CDN up to 2000px `srcset`, plus studio shots for SKUs that had no photo)
-- **All products visible** on the homepage catalog — no hidden drawer of inventory
-- **Navigation** uses real Shopify collection / search / cart / account URLs, with homepage JS filters as a fast overlay
+- **Navigation** uses real Shopify collection / search / cart / account URLs on every page
+- **Wishlist** saved per device (product handles in `localStorage`), available from the header and mobile menu
+- **Layaway requests** are sent to the store inbox through Shopify's contact form (no app needed)
 - Product, collection, search, cart, and account templates match the porcelain / gold storefront
 - OS 2.0 **header-group** and **footer-group** so the theme editor can rearrange chrome
-- Native Shopify cart AJAX on collection / product cards, plus Storefront API checkout from the homepage catalog
 
 ## Upload
 
@@ -53,7 +53,7 @@ You can also build them as **manual** collections and add products in Admin.
 - Homepage JS catalog uses the same 2000px Shopify CDN transforms
 - 11 SKUs with no Shopify media now ship studio product photography in `assets/product-*.jpg`
 
-Replacing a photo in **Shopify Admin → Products** automatically upgrades Liquid templates. To refresh the homepage JS catalog, re-export `assets/ee-catalog.js`.
+Replacing a photo in **Shopify Admin → Products** automatically updates every template.
 
 ### 3. Navigation
 
@@ -63,7 +63,11 @@ Header, mega menu, mobile rail, footer, and collection chips link to:
 - Department collections when those handles exist
 - `/search?q=` · `/cart` · `/account`
 
-Homepage department chips still filter the on-page catalog instantly. On every other template, the same links go to Shopify collections so the full catalog stays one tap away.
+### 4. Pricing & layaway
+
+- Products priced at **$0** show "In Store" and cannot be added to the cart, so nothing is ever sold for free by mistake.
+- Products with more than one variant show **Choose Options** on cards and are added from the product page.
+- **Layaway**: shoppers pick *Layaway Plan* in the cart drawer, enter name / phone / email and agree to the terms. The request (items, totals, 25% deposit, due date) arrives as a contact-form email in the store inbox (**Settings → Notifications → Contact form** sender). Staff then collect the deposit and confirm the schedule.
 
 ## Color lock
 

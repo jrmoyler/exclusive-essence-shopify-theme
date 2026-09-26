@@ -23,7 +23,7 @@ body{margin:0;background:var(--porcelain);overflow-x:hidden;color:var(--ink);fon
 button,input,select,textarea{font:inherit}
 button,a{touch-action:manipulation}
 a{color:inherit;text-decoration:none}
-img{max-width:100%;display:block}
+img{max-width:100%;height:auto;display:block}
 button{cursor:pointer}
 .container{width:min(var(--max),calc(100% - 40px));margin-inline:auto}
 .sr-only{position:absolute!important;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
@@ -812,3 +812,60 @@ a.chip{display:inline-flex;align-items:center}
 .entry-gate-form .gate-skip{justify-self:center;display:inline-block}
 
 
+
+/* ===== Audit fixes: cart, wishlist, layaway, accessibility ===== */
+[hidden]{display:none!important}
+a:focus-visible,button:focus-visible,select:focus-visible,input:focus-visible,summary:focus-visible,[tabindex]:focus-visible{outline:2px solid var(--antique);outline-offset:2px}
+.search-shell:focus-within{border-color:var(--gold);box-shadow:0 0 0 3px rgba(199,155,59,.18)}
+.ee-swatch input:focus-visible+span{outline:2px solid var(--antique);outline-offset:2px}
+.ee-swatch input:disabled+span{opacity:.45;text-decoration:line-through}
+.brand-marquee:hover .brand-grid,.brand-marquee:focus-within .brand-grid{animation-play-state:paused}
+.badge-soldout{background:#6b7280}
+.product-media .wish{z-index:3}
+.card-actions a.add-btn{display:flex;align-items:center;justify-content:center;text-align:center}
+.card-actions form{margin:0;display:contents}
+.card-actions .add-btn{width:100%}
+.add-btn:disabled{background:#e5e1d8;color:#6b665c;cursor:not-allowed}
+.ee-compare{color:var(--muted);text-decoration:line-through;font-weight:500;margin-left:6px;font-size:.85em}
+.ee-price .ee-compare{font-size:1rem;margin-left:10px}
+.ee-wish-btn{display:inline-flex;align-items:center;justify-content:center;gap:8px}
+.ee-wish-btn .icon{width:18px;height:18px}
+.ee-wish-btn.active{background:var(--ivory);border-color:var(--gold);color:var(--bronze)}
+.ee-wish-btn.active .icon{fill:currentColor}
+.wish.active .icon{fill:currentColor}
+.ee-link-btn{border:0;background:none;padding:0;color:var(--antique);font-weight:800;text-decoration:underline;cursor:pointer}
+.ee-sort-form{display:flex;gap:8px;align-items:center;margin:0}
+.ee-sort-form select{height:42px;border:1px solid var(--line);background:#fff;padding:0 36px 0 12px;color:var(--ink)}
+.ee-discount{color:var(--success)}
+
+/* drawers */
+.drawer-empty{text-align:center;color:var(--muted);padding:48px 12px;margin:0}
+.drawer-fine-print{font-size:.74rem;color:var(--muted);margin:0 0 12px;text-align:center}
+.drawer-fine-print a{color:var(--antique);text-decoration:underline}
+.drawer-foot{margin:0}
+.drawer-foot .btn:disabled{opacity:.55;cursor:not-allowed;transform:none}
+.drawer-foot .btn + .btn{margin-top:8px}
+.purchase-toggle{border:0;padding:0;margin:0 0 14px;min-width:0}
+.purchase-toggle label:focus-within{outline:2px solid var(--antique);outline-offset:2px}
+.layaway-panel .ee-form-errors{margin:8px 0 0}
+.cart-item a{color:inherit}
+.cart-item strong a:hover{color:var(--antique)}
+.cart-item small{display:block;margin-top:2px}
+.cart-item b{white-space:nowrap;text-align:right}
+.cart-item b s{display:block;color:var(--muted);font-weight:500;font-size:.78em}
+.cart-item .qty button:disabled{opacity:.5}
+.cart-item .remove{cursor:pointer;text-decoration:underline}
+#cartItems.is-busy{opacity:.55;pointer-events:none;transition:opacity .15s}
+.wish-actions{display:flex;align-items:center;gap:12px;margin-top:8px;flex-wrap:wrap}
+.wish-actions form{margin:0}
+.wish-actions .add-btn{display:inline-flex;align-items:center;justify-content:center;padding:8px 12px;min-height:34px}
+.wish-actions .remove{margin:0}
+.mega-promo-product{display:block}
+#wishlistBtn{position:relative;background:none;border:0;color:inherit}
+.mobile-nav-links .mobile-menu-group button[data-open-wishlist]{cursor:pointer;font:inherit}
+/* Cart drawer: keep the checkout button reachable when the layaway form is open on short screens */
+.drawer{height:100%;height:100dvh}
+.drawer .drawer-body{min-height:96px}
+#cartDrawerForm{flex:0 1 auto;overflow-y:auto;overscroll-behavior:contain;padding-bottom:0}
+#cartDrawerForm #checkoutBtn{position:sticky;bottom:0;margin-bottom:18px;z-index:1}
+#cartDrawerForm .total-row{margin-top:4px}

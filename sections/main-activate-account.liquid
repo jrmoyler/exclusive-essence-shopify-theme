@@ -3,9 +3,12 @@
     <h1>Activate account</h1>
     {% form 'activate_customer_password' %}
       {{ form.errors | default_errors }}
-      <input type="password" name="customer[password]" placeholder="Password">
-      <input type="password" name="customer[password_confirmation]" placeholder="Confirm password">
-      <button class="btn btn-primary" type="submit">Activate</button>
+      <label for="activatePassword">Password</label>
+      <input id="activatePassword" type="password" name="customer[password]" required minlength="5" autocomplete="new-password">
+      <label for="activatePasswordConfirm">Confirm password</label>
+      <input id="activatePasswordConfirm" type="password" name="customer[password_confirmation]" required minlength="5" autocomplete="new-password">
+      <button class="btn btn-primary" type="submit">Activate account</button>
+      <button class="btn btn-secondary" type="submit" name="decline" formnovalidate>Decline invitation</button>
     {% endform %}
   </div>
 </section>

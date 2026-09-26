@@ -1,6 +1,8 @@
 <section class="ee-shopify-main customer">
   <div class="container">
     <nav class="ee-breadcrumb" aria-label="Breadcrumb">
+      <a href="{{ routes.root_url }}">Home</a>
+      <span>/</span>
       <a href="{{ routes.account_url }}">Account</a>
       <span>/</span>
       <span>Addresses</span>
@@ -17,7 +19,8 @@
             {% endif %}
             {{ address | format_address }}
             {% form 'customer_address', address %}
-              <button class="btn btn-secondary" type="submit" name="_method" value="delete">Remove</button>
+              <input type="hidden" name="_method" value="delete">
+              <button class="btn btn-secondary" type="submit" onclick="return confirm('Remove this address?')">Remove</button>
             {% endform %}
           </article>
         {% endfor %}
@@ -34,9 +37,17 @@
         <input type="text" name="address[address1]" placeholder="Address" autocomplete="address-line1" required>
         <input type="text" name="address[address2]" placeholder="Apartment, suite (optional)" autocomplete="address-line2">
         <input type="text" name="address[city]" placeholder="City" autocomplete="address-level2" required>
-        <input type="text" name="address[province]" placeholder="State" autocomplete="address-level1">
+        <input type="text" name="address[province]" placeholder="State (e.g. Ohio)" autocomplete="address-level1">
         <input type="text" name="address[zip]" placeholder="ZIP" autocomplete="postal-code" required>
-        <input type="text" name="address[country]" placeholder="Country" value="United States" autocomplete="country-name">
+        <label class="sr-only" for="AddressCountryNew">Country</label>
+        <select id="AddressCountryNew" name="address[country]" autocomplete="country-name">{{ country_option_tags }}</select>
+        <script>
+          (function(){
+            var s = document.getElementById('AddressCountryNew');
+            if (!s || (s.value && s.value !== '---')) return;
+            for (var i = 0; i < s.options.length; i++) { if (s.options[i].value === 'United States') { s.selectedIndex = i; break; } }
+          })();
+        </script>
         <input type="tel" name="address[phone]" placeholder="Phone" autocomplete="tel">
       </div>
       <label class="layaway-agree">

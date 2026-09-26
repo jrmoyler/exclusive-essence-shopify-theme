@@ -1,8 +1,17 @@
-{% if section.settings.enable %}
+{%- liquid
+  assign show_gate = section.settings.enable
+  if template.name == 'cart' or template.name == 'password' or template.name == 'gift_card' or template.directory == 'customers' or request.design_mode
+    assign show_gate = false
+  endif
+  if customer
+    assign show_gate = false
+  endif
+-%}
+{% if show_gate %}
   {%- unless request.query_parameters.gate == 'skip' -%}
 <div class="entry-gate" id="entryGate" role="dialog" aria-modal="true" aria-labelledby="entryGateTitle">
   <div class="entry-gate-card">
-    <img class="gate-logo" src="{{ 'b277e37070df.png' | asset_url }}" alt="{{ shop.name | escape }}">
+    <img class="gate-logo" src="{{ 'b277e37070df.png' | asset_url }}" alt="{{ shop.name | escape }}" width="700" height="545">
 
     {% form 'customer', class: 'entry-gate-form', id: 'entryGateForm' %}
       {% if form.posted_successfully? %}
@@ -17,7 +26,7 @@
           </div>
           <div class="gate-success-actions">
             <button class="btn btn-secondary" id="gateShareBtn" type="button">Share With a Friend</button>
-            <a class="btn btn-primary" id="gateEnterBtn" href="{{ routes.root_url }}">Enter the Store</a>
+            <a class="btn btn-primary" id="gateEnterBtn" href="{{ request.path }}">Enter the Store</a>
           </div>
         </div>
         <script>
@@ -41,14 +50,24 @@
         <input id="gateName" type="text" name="contact[first_name]" placeholder="Full name" required autocomplete="name">
         <label class="sr-only" for="gateEmail">Email address</label>
         <input id="gateEmail" type="email" name="contact[email]" placeholder="Email address" required autocomplete="email">
-        <label class="sr-only" for="gatePhone">Phone number</label>
-        <input id="gatePhone" type="tel" name="contact[phone]" placeholder="Phone number" required autocomplete="tel" inputmode="tel">
+        <label class="sr-only" for="gatePhone">Phone number (optional)</label>
+        <input id="gatePhone" type="tel" name="contact[phone]" placeholder="Phone number (optional)" autocomplete="tel" inputmode="tel">
         <button class="btn btn-primary" type="submit">Count Me In</button>
-        <a class="gate-skip" id="entryGateSkip" href="{{ request.path }}?gate=skip">Continue to the store</a>
+        <a class="gate-skip" id="entryGateSkip" href="{{ request.path }}?gate=skip">No thanks, continue to the store</a>
       {% endif %}
     {% endform %}
   </div>
 </div>
+<script>
+  /* Returning visitors never see the gate, not even for a frame */
+  (function(){
+    var gate = document.getElementById('entryGate');
+    if (!gate || gate.querySelector('.gate-success')) return;
+    var done = false;
+    try { done = localStorage.getItem('eeGateDone') === '1' || sessionStorage.getItem('eeGateSkip') === '1'; } catch (err) {}
+    if (done) gate.parentNode.removeChild(gate);
+  })();
+</script>
   {%- endunless -%}
 {% endif %}
 
